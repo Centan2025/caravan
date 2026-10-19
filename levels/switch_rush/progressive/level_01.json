@@ -1,0 +1,23 @@
+{
+  "id": 1,
+  "title": "Seviye 1: İlk Makas (J2)",
+  "mode": "progressive",
+  "district": "suburb",
+  "levelFamily": "learning",
+  "primaryChallenge": "Tek makas temeli",
+  "manifest": [
+    "B"
+  ],
+  "tickDurationMs": 1000,
+  "spawnCadenceTicks": 5,
+  "activeJunctions": [
+    "J2"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": 1,
+  "spawnPreparationMs": 1000,
+  "hint": "Tek bir paket treni geliyor! Mavi istasyona gitmesi için J2 makasına dokunun."
+}

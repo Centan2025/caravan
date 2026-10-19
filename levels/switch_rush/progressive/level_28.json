@@ -1,0 +1,34 @@
+{
+  "id": 28,
+  "title": "Seviye 28: Gece Lojistiği",
+  "mode": "progressive",
+  "district": "night_express",
+  "levelFamily": "route_selection",
+  "primaryChallenge": "10 araçlık dengeli dağıtım",
+  "manifest": [
+    "R",
+    "B",
+    "G",
+    "Y",
+    "Y",
+    "B",
+    "G",
+    "R",
+    "B",
+    "Y"
+  ],
+  "tickDurationMs": 700,
+  "spawnCadenceTicks": 2,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 2,
+  "maxConcurrentVehicles": 3,
+  "spawnPreparationMs": 1000,
+  "hint": "Tam kapasite gece lojistiği; dört istasyonu dengeli doldurun."
+}

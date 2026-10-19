@@ -1,0 +1,36 @@
+{
+  "id": 30,
+  "title": "Seviye 30: Büyük Final",
+  "mode": "progressive",
+  "district": "night_express",
+  "levelFamily": "mastery",
+  "primaryChallenge": "Metropol Lojistik Direktörlüğü Büyük Finali",
+  "manifest": [
+    "R",
+    "G",
+    "B",
+    "Y",
+    "R",
+    "G",
+    "B",
+    "Y",
+    "Y",
+    "B",
+    "G",
+    "R"
+  ],
+  "tickDurationMs": 700,
+  "spawnCadenceTicks": 2,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 2,
+  "maxConcurrentVehicles": 3,
+  "spawnPreparationMs": 1000,
+  "hint": "Büyük Final! Metropol Lojistik Direktörlüğü nihai sınavı!"
+}

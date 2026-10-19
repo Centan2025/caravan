@@ -11,6 +11,11 @@ export type TelemetryEventType =
   | 'run_won'
   | 'run_lost'
   | 'replay_clicked'
+  | 'voluntary_replay'
+  | 'next_level_clicked'
+  | 'playtest_started'
+  | 'playtest_completed'
+  | 'playtest_abandoned'
   | 'exit_clicked'
   | 'help_opened'
   | 'app_blurred'
@@ -44,7 +49,7 @@ export interface RunSummary {
 
 export class TelemetryLogger {
   private static instance: TelemetryLogger;
-  public readonly sessionId: string;
+  public sessionId: string;
   private events: TelemetryEvent[] = [];
   
   // Current active run state
@@ -218,6 +223,35 @@ export class TelemetryLogger {
     }
   }
 
+  public recordVoluntaryReplay(payload?: Record<string, any>): void {
+    this.logEvent('voluntary_replay', { intentional: true, ...payload });
+  }
+
+  public recordNextLevelClicked(payload?: Record<string, any>): void {
+    this.logEvent('next_level_clicked', { intentional: true, ...payload });
+  }
+
+  public recordPlaytestStarted(payload?: Record<string, any>): void {
+    this.logEvent('playtest_started', { ...payload });
+  }
+
+  public recordPlaytestCompleted(payload?: Record<string, any>): void {
+    this.logEvent('playtest_completed', { ...payload });
+  }
+
+  public recordPlaytestAbandoned(payload?: Record<string, any>): void {
+    this.logEvent('playtest_abandoned', { intentional: true, ...payload });
+  }
+
+  public resetSession(): string {
+    const newId = `ses_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    this.sessionId = newId;
+    try {
+      localStorage.setItem('telemetry_session_id', newId);
+    } catch {}
+    return newId;
+  }
+
   public recordHelpOpened(): void {
     this.logEvent('help_opened');
   }
@@ -264,6 +298,7 @@ export class TelemetryLogger {
 
   public clearEvents(): void {
     this.events = [];
+    this.currentRun = null;
     try {
       localStorage.removeItem('telemetry_events');
     } catch {}
@@ -293,6 +328,51 @@ export class TelemetryLogger {
   public downloadJSON(filename: string = `telemetry_${this.sessionId}.json`): void {
     const jsonStr = this.exportJSON();
     const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  public exportCSV(): string {
+    const headers = [
+      'session_id',
+      'timestamp_iso',
+      'elapsed_run_ms',
+      'active_play_ms',
+      'game_id',
+      'scenario_id',
+      'event_type',
+      'payload',
+    ];
+
+    const escapeCsv = (str: string) => `"${str.replace(/"/g, '""')}"`;
+
+    const rows = this.events.map((ev) => {
+      const iso = new Date(ev.timestamp).toISOString();
+      const payloadStr = ev.payload ? JSON.stringify(ev.payload) : '';
+      return [
+        ev.session_id,
+        iso,
+        ev.elapsed_run_ms.toFixed(0),
+        ev.active_play_ms.toFixed(0),
+        ev.game_id,
+        ev.scenario_id,
+        ev.event_type,
+        escapeCsv(payloadStr),
+      ].join(',');
+    });
+
+    return [headers.join(','), ...rows].join('\n');
+  }
+
+  public downloadCSV(filename: string = `telemetry_${this.sessionId}.csv`): void {
+    const csvStr = this.exportCSV();
+    const blob = new Blob([csvStr], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

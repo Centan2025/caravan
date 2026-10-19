@@ -1,0 +1,33 @@
+{
+  "id": 27,
+  "title": "Seviye 27: Metropol Ekspres Trafiği",
+  "mode": "progressive",
+  "district": "night_express",
+  "levelFamily": "traffic",
+  "primaryChallenge": "Aynı anda 3 araçlık yoğun hat",
+  "manifest": [
+    "B",
+    "Y",
+    "R",
+    "G",
+    "B",
+    "G",
+    "R",
+    "Y",
+    "B"
+  ],
+  "tickDurationMs": 700,
+  "spawnCadenceTicks": 2,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "BLUE",
+  "initialJ3": "YELLOW",
+  "maxMistakes": 2,
+  "maxConcurrentVehicles": 3,
+  "spawnPreparationMs": 1000,
+  "hint": "Metropol gece trafiği; 3 aracı aynı anda rayda yönlendirin."
+}

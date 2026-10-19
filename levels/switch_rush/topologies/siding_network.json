@@ -1,0 +1,26 @@
+{
+  "id": "siding_network",
+  "name": "Siding Bypass Network",
+  "nodes": [
+    { "id": "SOURCE", "type": "SOURCE", "position": { "x": 270, "y": 120 } },
+    { "id": "SW_SIDING", "type": "SWITCH", "position": { "x": 270, "y": 240 }, "label": "Giriş Makası" },
+    { "id": "SIDING_BAY", "type": "SIDING", "capacity": 1, "position": { "x": 140, "y": 380 }, "label": "Park Cebi" },
+    { "id": "MERGE", "type": "WAYPOINT", "position": { "x": 270, "y": 480 }, "label": "Birleşme" },
+    { "id": "SW_STATION", "type": "SWITCH", "position": { "x": 270, "y": 600 }, "label": "İstasyon Makası" },
+    { "id": "RED", "type": "STATION", "stationColor": "RED", "position": { "x": 160, "y": 740 } },
+    { "id": "BLUE", "type": "STATION", "stationColor": "BLUE", "position": { "x": 380, "y": 740 } }
+  ],
+  "switches": [
+    { "id": "SW_SIDING", "branches": ["MAIN", "SIDING"], "defaultBranch": "MAIN" },
+    { "id": "SW_STATION", "branches": ["RED", "BLUE"], "defaultBranch": "RED" }
+  ],
+  "edges": [
+    { "id": "e_src_sw", "from": "SOURCE", "to": "SW_SIDING" },
+    { "id": "e_sw_main", "from": "SW_SIDING", "to": "MERGE", "branch": "MAIN" },
+    { "id": "e_sw_siding", "from": "SW_SIDING", "to": "SIDING_BAY", "branch": "SIDING" },
+    { "id": "e_siding_merge", "from": "SIDING_BAY", "to": "MERGE" },
+    { "id": "e_merge_sw", "from": "MERGE", "to": "SW_STATION" },
+    { "id": "e_sw_red", "from": "SW_STATION", "to": "RED", "branch": "RED" },
+    { "id": "e_sw_blue", "from": "SW_STATION", "to": "BLUE", "branch": "BLUE" }
+  ]
+}

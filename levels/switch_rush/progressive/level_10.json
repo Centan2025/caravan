@@ -1,0 +1,28 @@
+{
+  "id": 10,
+  "title": "Seviye 10: Çapraz Öncelik",
+  "mode": "progressive",
+  "district": "downtown",
+  "levelFamily": "priority",
+  "primaryChallenge": "Sıralı zıt yönlendirme",
+  "manifest": [
+    "B",
+    "Y",
+    "R",
+    "G"
+  ],
+  "tickDurationMs": 800,
+  "spawnCadenceTicks": 3,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": 2,
+  "spawnPreparationMs": 1000,
+  "hint": "Zıt istasyonlara giden trenleri öncelik sırasına göre yönlendirin."
+}

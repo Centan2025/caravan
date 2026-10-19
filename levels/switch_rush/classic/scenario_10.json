@@ -1,0 +1,36 @@
+{
+  "id": 10,
+  "title": "Senaryo 10",
+  "mode": "classic",
+  "district": null,
+  "levelFamily": null,
+  "primaryChallenge": null,
+  "manifest": [
+    "R",
+    "G",
+    "B",
+    "Y",
+    "Y",
+    "B",
+    "G",
+    "R",
+    "B",
+    "Y",
+    "R",
+    "G"
+  ],
+  "tickDurationMs": 700,
+  "spawnCadenceTicks": 2,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": null,
+  "spawnPreparationMs": null,
+  "hint": null
+}

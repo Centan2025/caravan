@@ -1,0 +1,32 @@
+{
+  "id": 25,
+  "title": "Seviye 25: Gece Vardiyası",
+  "mode": "progressive",
+  "district": "night_express",
+  "levelFamily": "priority",
+  "primaryChallenge": "Işıklı raylarda gece temposu",
+  "manifest": [
+    "R",
+    "G",
+    "R",
+    "G",
+    "B",
+    "Y",
+    "B",
+    "Y"
+  ],
+  "tickDurationMs": 700,
+  "spawnCadenceTicks": 2,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 2,
+  "maxConcurrentVehicles": 3,
+  "spawnPreparationMs": 1000,
+  "hint": "Gece ekspresi başladı; ışıklı raylarda ritmi koruyun."
+}

@@ -1,0 +1,32 @@
+{
+  "id": 22,
+  "title": "Seviye 22: Rıhtım Yoğunluğu",
+  "mode": "progressive",
+  "district": "harbor",
+  "levelFamily": "traffic",
+  "primaryChallenge": "Çoklu hat kuyruk yönetimi",
+  "manifest": [
+    "R",
+    "B",
+    "Y",
+    "G",
+    "Y",
+    "B",
+    "R",
+    "G"
+  ],
+  "tickDurationMs": 700,
+  "spawnCadenceTicks": 2,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "YELLOW",
+  "maxMistakes": 2,
+  "maxConcurrentVehicles": 3,
+  "spawnPreparationMs": 1000,
+  "hint": "Rıhtımda yoğun trafik; istasyon kuyruklarını yönetin."
+}

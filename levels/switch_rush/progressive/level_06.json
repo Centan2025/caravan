@@ -1,0 +1,27 @@
+{
+  "id": 6,
+  "title": "Seviye 6: Suburb Ustalığı",
+  "mode": "progressive",
+  "district": "suburb",
+  "levelFamily": "mastery",
+  "primaryChallenge": "Bölge 1 Ustalık Mezuniyeti",
+  "manifest": [
+    "R",
+    "B",
+    "R",
+    "G"
+  ],
+  "tickDurationMs": 850,
+  "spawnCadenceTicks": 4,
+  "activeJunctions": [
+    "J1",
+    "J2"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": 1,
+  "spawnPreparationMs": 1000,
+  "hint": "Suburb Mezuniyeti! Hem J1 hem J2 makasını birlikte başarıyla yönetin."
+}

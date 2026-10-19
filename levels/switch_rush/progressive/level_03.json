@@ -1,0 +1,25 @@
+{
+  "id": 3,
+  "title": "Seviye 3: Tek Makasta Ritim",
+  "mode": "progressive",
+  "district": "suburb",
+  "levelFamily": "timing",
+  "primaryChallenge": "Basit zamanlama ritmi",
+  "manifest": [
+    "B",
+    "R",
+    "B"
+  ],
+  "tickDurationMs": 900,
+  "spawnCadenceTicks": 4,
+  "activeJunctions": [
+    "J2"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": 1,
+  "spawnPreparationMs": 1000,
+  "hint": "Her tren teslim edildikten sonra J2 makasını sıradaki hedefe göre ayarlayın."
+}

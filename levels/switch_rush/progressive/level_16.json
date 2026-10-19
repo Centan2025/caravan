@@ -1,0 +1,30 @@
+{
+  "id": 16,
+  "title": "Seviye 16: Üretim Bandı Trafiği",
+  "mode": "progressive",
+  "district": "industrial",
+  "levelFamily": "traffic",
+  "primaryChallenge": "3 eşzamanlı araç akışı",
+  "manifest": [
+    "R",
+    "G",
+    "B",
+    "Y",
+    "B",
+    "G"
+  ],
+  "tickDurationMs": 750,
+  "spawnCadenceTicks": 3,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": 3,
+  "spawnPreparationMs": 1000,
+  "hint": "Yüksek akışlı fabrika sevkiyatı; makas kilitlerine dikkat edin."
+}

@@ -1,0 +1,32 @@
+{
+  "id": 24,
+  "title": "Seviye 24: Büyük Liman Dok Ustalığı",
+  "mode": "progressive",
+  "district": "harbor",
+  "levelFamily": "mastery",
+  "primaryChallenge": "Bölge 4 Ustalık Sınavı",
+  "manifest": [
+    "Y",
+    "B",
+    "R",
+    "G",
+    "R",
+    "B",
+    "G",
+    "Y"
+  ],
+  "tickDurationMs": 700,
+  "spawnCadenceTicks": 2,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "RIGHT",
+  "initialJ2": "RED",
+  "initialJ3": "YELLOW",
+  "maxMistakes": 2,
+  "maxConcurrentVehicles": 3,
+  "spawnPreparationMs": 1000,
+  "hint": "Büyük Liman Dok Ustalığı! Liman teslimatlarını başarıyla tamamlayın."
+}

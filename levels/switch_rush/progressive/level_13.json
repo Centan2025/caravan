@@ -1,0 +1,29 @@
+{
+  "id": 13,
+  "title": "Seviye 13: Blok Trenler",
+  "mode": "progressive",
+  "district": "industrial",
+  "levelFamily": "timing",
+  "primaryChallenge": "Aynı renkli blokların ardından dönüş",
+  "manifest": [
+    "R",
+    "R",
+    "B",
+    "G",
+    "G"
+  ],
+  "tickDurationMs": 750,
+  "spawnCadenceTicks": 3,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": 2,
+  "spawnPreparationMs": 1000,
+  "hint": "Aynı renkli trenlerin ardından makasları gecikmeden değiştirin."
+}

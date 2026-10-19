@@ -1,0 +1,31 @@
+{
+  "id": 20,
+  "title": "Seviye 20: Liman Temposu",
+  "mode": "progressive",
+  "district": "harbor",
+  "levelFamily": "timing",
+  "primaryChallenge": "Kargo gemisi boşaltma temposu",
+  "manifest": [
+    "R",
+    "B",
+    "R",
+    "G",
+    "Y",
+    "G",
+    "B"
+  ],
+  "tickDurationMs": 700,
+  "spawnCadenceTicks": 3,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": 3,
+  "spawnPreparationMs": 1000,
+  "hint": "Liman temposu: Araçlar makasa varmadan önce rotayı belirleyin."
+}

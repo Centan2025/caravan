@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 import { ChainDominoScene } from '../games/ChainDominoScene';
 import { SwitchRushScene } from '../games/SwitchRushScene';
+import { SidingRushScene } from '../games/SidingRushScene';
+import { ALL_SIDING_LEVELS, PLAYTEST_LEVELS } from '../core/switch/graph/SidingLevels';
 import { GameScene } from '../game/GameScene';
 import { UIManager } from './UIManager';
 import { TelemetryLogger } from '../shared/Telemetry';
@@ -8,8 +10,8 @@ import { FIXED_SCENARIOS } from '../core/switch/SwitchNetwork';
 import { PROGRESSIVE_LEVELS } from '../core/switch/SwitchLevels';
 import { sfx } from '../audio/SoundEffects';
 
-export type ActiveGameTab = 'chain' | 'switch' | 'caravan';
-export type SwitchSubmode = 'progressive' | 'original';
+export type ActiveGameTab = 'chain' | 'switch' | 'caravan' | 'playtest';
+export type SwitchSubmode = 'progressive' | 'original' | 'siding' | 'minirail';
 
 export class AppController {
   private game: Phaser.Game;
@@ -22,6 +24,7 @@ export class AppController {
   private tabChain!: HTMLButtonElement;
   private tabSwitch!: HTMLButtonElement;
   private tabCaravan!: HTMLButtonElement;
+  private tabPlaytest!: HTMLButtonElement;
   private brandTitle!: HTMLElement;
   private levelSelect!: HTMLSelectElement;
   private caravanControlsWrap!: HTMLElement[];
@@ -32,6 +35,8 @@ export class AppController {
   private switchSubmodeContainer!: HTMLElement;
   private switchSubmodeProgBtn!: HTMLButtonElement;
   private switchSubmodeOrigBtn!: HTMLButtonElement;
+  private switchSubmodeSidingBtn!: HTMLButtonElement;
+  private switchSubmodeMinirailBtn!: HTMLButtonElement;
 
   // Telemetry Modal
   private telemetryModal!: HTMLElement;
@@ -49,14 +54,25 @@ export class AppController {
     this.bindDOM();
     this.attachEvents();
 
-    // Start with Chain Domino scene active
-    this.switchToTab('chain');
+    // Check if URL specifies playtest or minirail mode directly
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('mode') === 'playtest') {
+      this.switchToTab('playtest');
+    } else if (urlParams.get('mode') === 'minirail') {
+      this.switchToTab('switch');
+      this.setSwitchSubmode('minirail');
+      const lvl = parseInt(urlParams.get('level') || '101', 10);
+      this.onLevelSelected(lvl);
+    } else {
+      this.switchToTab('chain');
+    }
   }
 
   private bindDOM(): void {
     this.tabChain = document.getElementById('nav-btn-chain') as HTMLButtonElement;
     this.tabSwitch = document.getElementById('nav-btn-switch') as HTMLButtonElement;
     this.tabCaravan = document.getElementById('nav-btn-caravan') as HTMLButtonElement;
+    this.tabPlaytest = document.getElementById('nav-btn-playtest') as HTMLButtonElement;
     this.brandTitle = document.getElementById('brand-title-text') as HTMLElement;
     this.levelSelect = document.getElementById('level-select') as HTMLSelectElement;
     this.soundBtn = document.getElementById('btn-sound') as HTMLButtonElement;
@@ -66,6 +82,8 @@ export class AppController {
     this.switchSubmodeContainer = document.getElementById('switch-submode-container') as HTMLElement;
     this.switchSubmodeProgBtn = document.getElementById('switch-submode-progressive') as HTMLButtonElement;
     this.switchSubmodeOrigBtn = document.getElementById('switch-submode-original') as HTMLButtonElement;
+    this.switchSubmodeSidingBtn = document.getElementById('switch-submode-siding') as HTMLButtonElement;
+    this.switchSubmodeMinirailBtn = document.getElementById('switch-submode-minirail') as HTMLButtonElement;
 
     // Elements that belong exclusively to Caravan
     const caravanMode = document.getElementById('caravan-mode-container') as HTMLElement;
@@ -96,6 +114,9 @@ export class AppController {
     if (this.tabCaravan) {
       this.tabCaravan.addEventListener('click', () => this.switchToTab('caravan'));
     }
+    if (this.tabPlaytest) {
+      this.tabPlaytest.addEventListener('click', () => this.switchToTab('playtest'));
+    }
 
     if (this.levelSelect) {
       this.levelSelect.addEventListener('change', () => {
@@ -124,6 +145,18 @@ export class AppController {
       });
     }
 
+    if (this.switchSubmodeSidingBtn) {
+      this.switchSubmodeSidingBtn.addEventListener('click', () => {
+        this.setSwitchSubmode('siding');
+      });
+    }
+
+    if (this.switchSubmodeMinirailBtn) {
+      this.switchSubmodeMinirailBtn.addEventListener('click', () => {
+        this.setSwitchSubmode('minirail');
+      });
+    }
+
     if (this.telemetryBtn) {
       this.telemetryBtn.addEventListener('click', () => {
         this.openTelemetryModal();
@@ -139,6 +172,13 @@ export class AppController {
     if (this.telemetryDownloadBtn) {
       this.telemetryDownloadBtn.addEventListener('click', () => {
         this.telemetry.downloadJSON();
+      });
+    }
+
+    const csvBtn = document.getElementById('btn-telemetry-download-csv') as HTMLButtonElement;
+    if (csvBtn) {
+      csvBtn.addEventListener('click', () => {
+        this.telemetry.downloadCSV();
       });
     }
 
@@ -164,11 +204,32 @@ export class AppController {
     if (this.switchSubmodeOrigBtn) {
       this.switchSubmodeOrigBtn.classList.toggle('active', mode === 'original');
     }
+    if (this.switchSubmodeSidingBtn) {
+      this.switchSubmodeSidingBtn.classList.toggle('active', mode === 'siding');
+    }
+    if (this.switchSubmodeMinirailBtn) {
+      this.switchSubmodeMinirailBtn.classList.toggle('active', mode === 'minirail');
+    }
     this.populateSwitchLevelsOrScenarios();
     if (this.activeTab === 'switch') {
-      const scene = this.game.scene.getScene('SwitchRushScene') as SwitchRushScene;
-      if (scene && this.game.scene.isActive('SwitchRushScene')) {
-        scene.loadScenario(1, mode);
+      const sceneManager = this.game.scene;
+      if (mode === 'minirail') {
+        sceneManager.stop('SwitchRushScene');
+        sceneManager.stop('SidingRushScene');
+        sceneManager.start('MiniRailCityScene', { levelId: 101 });
+      } else if (mode === 'siding') {
+        sceneManager.stop('SwitchRushScene');
+        sceneManager.stop('MiniRailCityScene');
+        sceneManager.start('SidingRushScene', { scenarioIndex: 0 });
+      } else {
+        sceneManager.stop('SidingRushScene');
+        sceneManager.stop('MiniRailCityScene');
+        const scene = sceneManager.getScene('SwitchRushScene') as SwitchRushScene;
+        if (scene && sceneManager.isActive('SwitchRushScene')) {
+          scene.loadScenario(1, mode);
+        } else {
+          sceneManager.start('SwitchRushScene', { scenario: 1, mode });
+        }
       }
     }
   }
@@ -180,6 +241,7 @@ export class AppController {
     if (this.tabChain) this.tabChain.classList.toggle('active', tab === 'chain');
     if (this.tabSwitch) this.tabSwitch.classList.toggle('active', tab === 'switch');
     if (this.tabCaravan) this.tabCaravan.classList.toggle('active', tab === 'caravan');
+    if (this.tabPlaytest) this.tabPlaytest.classList.toggle('active', tab === 'playtest');
 
     // Show or hide Caravan specific HTML HUD elements
     const isCaravan = tab === 'caravan';
@@ -200,6 +262,8 @@ export class AppController {
       if (this.brandTitle) this.brandTitle.innerHTML = '<span>🎯</span> CHAIN DOMINO';
       this.populateChainLevels();
       sceneManager.stop('SwitchRushScene');
+      sceneManager.stop('SidingRushScene');
+      sceneManager.stop('MiniRailCityScene');
       sceneManager.stop('GameScene');
       sceneManager.start('ChainDominoScene', { level: 1 });
     } else if (tab === 'switch') {
@@ -207,17 +271,41 @@ export class AppController {
       this.populateSwitchLevelsOrScenarios();
       sceneManager.stop('ChainDominoScene');
       sceneManager.stop('GameScene');
-      sceneManager.start('SwitchRushScene', { scenario: 1, mode: this.switchSubmode });
+      if (this.switchSubmode === 'minirail') {
+        sceneManager.stop('SwitchRushScene');
+        sceneManager.stop('SidingRushScene');
+        sceneManager.start('MiniRailCityScene', { levelId: 101 });
+      } else if (this.switchSubmode === 'siding') {
+        sceneManager.stop('SwitchRushScene');
+        sceneManager.stop('MiniRailCityScene');
+        sceneManager.start('SidingRushScene', { scenarioIndex: 0 });
+      } else {
+        sceneManager.stop('SidingRushScene');
+        sceneManager.stop('MiniRailCityScene');
+        sceneManager.start('SwitchRushScene', { scenario: 1, mode: this.switchSubmode });
+      }
     } else if (tab === 'caravan') {
       if (this.brandTitle) this.brandTitle.innerHTML = '<span>🐪</span> CARAVAN';
       this.populateCaravanLevels();
       sceneManager.stop('ChainDominoScene');
       sceneManager.stop('SwitchRushScene');
+      sceneManager.stop('SidingRushScene');
+      sceneManager.stop('MiniRailCityScene');
       sceneManager.start('GameScene', { levelId: 1, mode: 'B' });
       const caravanScene = sceneManager.getScene('GameScene') as GameScene;
       if (caravanScene) {
         this.caravanUIManager.init(caravanScene);
       }
+    } else if (tab === 'playtest') {
+      if (this.brandTitle) this.brandTitle.innerHTML = '<span>🧪</span> SIDING PLAYTEST';
+      this.telemetry.resetSession();
+      this.populatePlaytestLevels();
+      sceneManager.stop('ChainDominoScene');
+      sceneManager.stop('SwitchRushScene');
+      sceneManager.stop('GameScene');
+      sceneManager.stop('SidingRushScene');
+      sceneManager.stop('MiniRailCityScene');
+      sceneManager.start('SidingRushScene', { scenarioIndex: 0, isPlaytest: true });
     }
   }
 
@@ -253,6 +341,29 @@ export class AppController {
         opt.textContent = `[${distLabel}] ${l.title} (${l.manifest.length} tren)`;
         this.levelSelect.appendChild(opt);
       }
+      this.levelSelect.value = '1';
+    } else if (this.switchSubmode === 'minirail') {
+      const minirailLevels = [
+        { id: 101, title: 'Seviye 101: Çayır & Vadi (Tek Park Cebi)' },
+        { id: 104, title: 'Seviye 104: Lojistik Garı (Çift Park Cebi Dual)' },
+        { id: 1032, title: 'Seviye 103-B: Maden Yükleme (2x FIFO Cebi)' },
+      ];
+      for (const ml of minirailLevels) {
+        const opt = document.createElement('option');
+        opt.value = ml.id.toString();
+        opt.textContent = `🚂 [Diorama] ${ml.title}`;
+        this.levelSelect.appendChild(opt);
+      }
+      this.levelSelect.value = '101';
+    } else if (this.switchSubmode === 'siding') {
+      for (let i = 0; i < ALL_SIDING_LEVELS.length; i++) {
+        const sc = ALL_SIDING_LEVELS[i];
+        const opt = document.createElement('option');
+        opt.value = i.toString();
+        opt.textContent = `🅿️ ${sc.title} (${sc.manifest.length} tren)`;
+        this.levelSelect.appendChild(opt);
+      }
+      this.levelSelect.value = '0';
     } else {
       for (const sc of FIXED_SCENARIOS) {
         const opt = document.createElement('option');
@@ -261,8 +372,8 @@ export class AppController {
         opt.textContent = `⚡ [Classic] Senaryo ${sc.id} [${preview}.. (${sc.manifest.length} tren)]`;
         this.levelSelect.appendChild(opt);
       }
+      this.levelSelect.value = '1';
     }
-    this.levelSelect.value = '1';
   }
 
   private populateCaravanLevels(): void {
@@ -282,6 +393,19 @@ export class AppController {
     this.levelSelect.value = '1';
   }
 
+  private populatePlaytestLevels(): void {
+    if (!this.levelSelect) return;
+    this.levelSelect.innerHTML = '';
+    for (let i = 0; i < PLAYTEST_LEVELS.length; i++) {
+      const sc = PLAYTEST_LEVELS[i];
+      const opt = document.createElement('option');
+      opt.value = i.toString();
+      opt.textContent = `🧪 [Test ${i + 1}/5] ${sc.title} (${sc.manifest.length} tren)`;
+      this.levelSelect.appendChild(opt);
+    }
+    this.levelSelect.value = '0';
+  }
+
   private onLevelSelected(val: number): void {
     if (isNaN(val)) return;
 
@@ -291,17 +415,49 @@ export class AppController {
         scene.loadLevel(val);
       } else {
         this.game.scene.stop('SwitchRushScene');
+        this.game.scene.stop('SidingRushScene');
         this.game.scene.stop('GameScene');
         this.game.scene.start('ChainDominoScene', { level: val });
       }
     } else if (this.activeTab === 'switch') {
-      const scene = this.game.scene.getScene('SwitchRushScene') as SwitchRushScene;
-      if (scene && this.game.scene.isActive('SwitchRushScene')) {
-        scene.loadScenario(val, this.switchSubmode);
+      if (this.switchSubmode === 'minirail') {
+        this.game.scene.stop('ChainDominoScene');
+        this.game.scene.stop('SwitchRushScene');
+        this.game.scene.stop('SidingRushScene');
+        this.game.scene.stop('GameScene');
+        this.game.scene.start('MiniRailCityScene', { levelId: val });
+      } else if (this.switchSubmode === 'siding') {
+        const scene = this.game.scene.getScene('SidingRushScene') as SidingRushScene;
+        if (scene && this.game.scene.isActive('SidingRushScene')) {
+          scene.loadLevel(val);
+        } else {
+          this.game.scene.stop('ChainDominoScene');
+          this.game.scene.stop('SwitchRushScene');
+          this.game.scene.stop('MiniRailCityScene');
+          this.game.scene.stop('GameScene');
+          this.game.scene.start('SidingRushScene', { scenarioIndex: val, isPlaytest: false });
+        }
+      } else {
+        const scene = this.game.scene.getScene('SwitchRushScene') as SwitchRushScene;
+        if (scene && this.game.scene.isActive('SwitchRushScene')) {
+          scene.loadScenario(val, this.switchSubmode);
+        } else {
+          this.game.scene.stop('ChainDominoScene');
+          this.game.scene.stop('SidingRushScene');
+          this.game.scene.stop('MiniRailCityScene');
+          this.game.scene.stop('GameScene');
+          this.game.scene.start('SwitchRushScene', { scenario: val, mode: this.switchSubmode });
+        }
+      }
+    } else if (this.activeTab === 'playtest') {
+      const scene = this.game.scene.getScene('SidingRushScene') as SidingRushScene;
+      if (scene && this.game.scene.isActive('SidingRushScene')) {
+        scene.loadLevel(val);
       } else {
         this.game.scene.stop('ChainDominoScene');
+        this.game.scene.stop('SwitchRushScene');
         this.game.scene.stop('GameScene');
-        this.game.scene.start('SwitchRushScene', { scenario: val, mode: this.switchSubmode });
+        this.game.scene.start('SidingRushScene', { scenarioIndex: val, isPlaytest: true });
       }
     } else if (this.activeTab === 'caravan') {
       const scene = this.game.scene.getScene('GameScene') as GameScene;
@@ -310,6 +466,7 @@ export class AppController {
       } else {
         this.game.scene.stop('ChainDominoScene');
         this.game.scene.stop('SwitchRushScene');
+        this.game.scene.stop('SidingRushScene');
         this.game.scene.start('GameScene', { levelId: val, mode: 'B' });
       }
     }
@@ -320,7 +477,8 @@ export class AppController {
     const firstTapEv = events.find((e) => e.event_type === 'first_tap');
     const validMoves = events.filter((e) => e.event_type === 'valid_move').length;
     const invalidTaps = events.filter((e) => e.event_type === 'invalid_tap').length;
-    const voluntaryReplays = events.filter((e) => e.event_type === 'replay_clicked').length;
+    const voluntaryReplays = events.filter((e) => e.event_type === 'voluntary_replay').length;
+    const retries = events.filter((e) => e.event_type === 'replay_clicked').length;
     const wins = events.filter((e) => e.event_type === 'run_won').length;
     const losses = events.filter((e) => e.event_type === 'run_lost').length;
     const activePlaySec = (this.telemetry.getActivePlayMs() / 1000).toFixed(1);
@@ -357,8 +515,8 @@ export class AppController {
           <span class="card-val" style="color:#48cae4;">${firstTapStr}</span>
         </div>
         <div class="telemetry-card">
-          <span class="card-label">İsteğe Bağlı Tekrar Oynama</span>
-          <span class="card-val" style="color:#52b788;">${voluntaryReplays} kez</span>
+          <span class="card-label">Gönüllü Tekrar / Normal Tekrar</span>
+          <span class="card-val" style="color:#52b788;">${voluntaryReplays} / ${retries}</span>
         </div>
         <div class="telemetry-card">
           <span class="card-label">Geçerli / Geçersiz Dokunuş</span>

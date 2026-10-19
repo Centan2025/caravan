@@ -1,0 +1,28 @@
+{
+  "id": "classic_tree",
+  "name": "Classic Binary Tree",
+  "nodes": [
+    { "id": "SOURCE", "type": "SOURCE", "position": { "x": 270, "y": 130 } },
+    { "id": "J1", "type": "SWITCH", "position": { "x": 270, "y": 280 } },
+    { "id": "J2", "type": "SWITCH", "position": { "x": 160, "y": 470 } },
+    { "id": "J3", "type": "SWITCH", "position": { "x": 380, "y": 470 } },
+    { "id": "RED", "type": "STATION", "stationColor": "RED", "position": { "x": 90, "y": 700 } },
+    { "id": "BLUE", "type": "STATION", "stationColor": "BLUE", "position": { "x": 230, "y": 700 } },
+    { "id": "GREEN", "type": "STATION", "stationColor": "GREEN", "position": { "x": 310, "y": 700 } },
+    { "id": "YELLOW", "type": "STATION", "stationColor": "YELLOW", "position": { "x": 450, "y": 700 } }
+  ],
+  "switches": [
+    { "id": "J1", "branches": ["LEFT", "RIGHT"], "defaultBranch": "LEFT" },
+    { "id": "J2", "branches": ["RED", "BLUE"], "defaultBranch": "RED" },
+    { "id": "J3", "branches": ["GREEN", "YELLOW"], "defaultBranch": "GREEN" }
+  ],
+  "edges": [
+    { "id": "e_src_j1", "from": "SOURCE", "to": "J1" },
+    { "id": "e_j1_j2", "from": "J1", "to": "J2", "branch": "LEFT" },
+    { "id": "e_j1_j3", "from": "J1", "to": "J3", "branch": "RIGHT" },
+    { "id": "e_j2_red", "from": "J2", "to": "RED", "branch": "RED" },
+    { "id": "e_j2_blue", "from": "J2", "to": "BLUE", "branch": "BLUE" },
+    { "id": "e_j3_green", "from": "J3", "to": "GREEN", "branch": "GREEN" },
+    { "id": "e_j3_yellow", "from": "J3", "to": "YELLOW", "branch": "YELLOW" }
+  ]
+}

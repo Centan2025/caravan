@@ -1,0 +1,32 @@
+{
+  "id": 23,
+  "title": "Seviye 23: Dört Renk Dalgası",
+  "mode": "progressive",
+  "district": "harbor",
+  "levelFamily": "timing",
+  "primaryChallenge": "Dört rengin ardışık dalgası",
+  "manifest": [
+    "B",
+    "G",
+    "R",
+    "Y",
+    "B",
+    "G",
+    "R",
+    "Y"
+  ],
+  "tickDurationMs": 700,
+  "spawnCadenceTicks": 2,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "BLUE",
+  "initialJ3": "GREEN",
+  "maxMistakes": 2,
+  "maxConcurrentVehicles": 3,
+  "spawnPreparationMs": 1000,
+  "hint": "Dört rengin ardışık dalgası; tam zamanında makas manevraları."
+}

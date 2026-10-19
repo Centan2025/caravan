@@ -1,0 +1,26 @@
+{
+  "id": 7,
+  "title": "Seviye 7: Sarı İstasyona Geçiş",
+  "mode": "progressive",
+  "district": "downtown",
+  "levelFamily": "learning",
+  "primaryChallenge": "J3 tanıtımı ve sarı hat",
+  "manifest": [
+    "G",
+    "Y",
+    "R"
+  ],
+  "tickDurationMs": 850,
+  "spawnCadenceTicks": 4,
+  "activeJunctions": [
+    "J1",
+    "J3"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": 2,
+  "spawnPreparationMs": 1000,
+  "hint": "Sarı istasyon için J3 makasını Sarıya çevirin."
+}

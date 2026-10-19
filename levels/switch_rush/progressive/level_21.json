@@ -1,0 +1,31 @@
+{
+  "id": 21,
+  "title": "Seviye 21: İskele Önceliği",
+  "mode": "progressive",
+  "district": "harbor",
+  "levelFamily": "priority",
+  "primaryChallenge": "Konteyner öncelik tayini",
+  "manifest": [
+    "G",
+    "R",
+    "Y",
+    "B",
+    "G",
+    "B",
+    "Y"
+  ],
+  "tickDurationMs": 700,
+  "spawnCadenceTicks": 2,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "RIGHT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": 3,
+  "spawnPreparationMs": 1000,
+  "hint": "Gelen konteyner trenlerinde öncelikli hattı tayin edin."
+}

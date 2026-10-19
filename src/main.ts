@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 import { ChainDominoScene } from './games/ChainDominoScene';
 import { SwitchRushScene } from './games/SwitchRushScene';
+import { SidingRushScene } from './games/SidingRushScene';
+import { MiniRailCityScene } from './games/MiniRailCityScene';
 import { GameScene } from './game/GameScene';
 import { AppController } from './ui/AppController';
 
@@ -15,7 +17,7 @@ window.addEventListener('DOMContentLoaded', () => {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,
     },
-    scene: [ChainDominoScene, SwitchRushScene, GameScene],
+    scene: [ChainDominoScene, SwitchRushScene, SidingRushScene, MiniRailCityScene, GameScene],
   };
 
   const game = new Phaser.Game(config);

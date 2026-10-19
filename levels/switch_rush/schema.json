@@ -1,0 +1,147 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SwitchRushLevelDefinition",
+  "description": "Engine-agnostic level definition for Switch Rush (Classic & 2.0 Progressive)",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "manifest",
+    "mode",
+    "tickDurationMs",
+    "spawnCadenceTicks",
+    "activeJunctions",
+    "initialJ1",
+    "initialJ2",
+    "initialJ3",
+    "maxMistakes"
+  ],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "title": {
+      "type": "string"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "classic",
+        "progressive"
+      ]
+    },
+    "district": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "suburb",
+        "downtown",
+        "industrial",
+        "harbor",
+        "night_express",
+        null
+      ]
+    },
+    "levelFamily": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "learning",
+        "timing",
+        "priority",
+        "route_selection",
+        "traffic",
+        "mastery",
+        null
+      ]
+    },
+    "primaryChallenge": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "manifest": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "R",
+          "B",
+          "G",
+          "Y"
+        ]
+      }
+    },
+    "tickDurationMs": {
+      "type": "integer",
+      "default": 700
+    },
+    "spawnCadenceTicks": {
+      "type": "integer",
+      "default": 2
+    },
+    "activeJunctions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "J1",
+          "J2",
+          "J3"
+        ]
+      }
+    },
+    "initialJ1": {
+      "type": "string",
+      "enum": [
+        "LEFT",
+        "RIGHT"
+      ],
+      "default": "LEFT"
+    },
+    "initialJ2": {
+      "type": "string",
+      "enum": [
+        "RED",
+        "BLUE"
+      ],
+      "default": "RED"
+    },
+    "initialJ3": {
+      "type": "string",
+      "enum": [
+        "GREEN",
+        "YELLOW"
+      ],
+      "default": "GREEN"
+    },
+    "maxMistakes": {
+      "type": "integer",
+      "default": 3
+    },
+    "maxConcurrentVehicles": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "spawnPreparationMs": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "hint": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

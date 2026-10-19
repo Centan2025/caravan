@@ -1,0 +1,26 @@
+{
+  "id": 8,
+  "title": "Seviye 8: Doğu Hattı Ritmi",
+  "mode": "progressive",
+  "district": "downtown",
+  "levelFamily": "timing",
+  "primaryChallenge": "J3 ritim testi",
+  "manifest": [
+    "Y",
+    "G",
+    "Y",
+    "G"
+  ],
+  "tickDurationMs": 850,
+  "spawnCadenceTicks": 4,
+  "activeJunctions": [
+    "J3"
+  ],
+  "initialJ1": "RIGHT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": 2,
+  "spawnPreparationMs": 1000,
+  "hint": "Trenler yaklaşırken J3 makasında sarı-yeşil ritmini yakalayın."
+}

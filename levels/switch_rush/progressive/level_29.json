@@ -1,0 +1,34 @@
+{
+  "id": 29,
+  "title": "Seviye 29: Hatasız Seri Görevi",
+  "mode": "progressive",
+  "district": "night_express",
+  "levelFamily": "mastery",
+  "primaryChallenge": "Seri çarpanı ve hatasız akış",
+  "manifest": [
+    "Y",
+    "G",
+    "B",
+    "R",
+    "Y",
+    "G",
+    "B",
+    "R",
+    "G",
+    "Y"
+  ],
+  "tickDurationMs": 700,
+  "spawnCadenceTicks": 2,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "RIGHT",
+  "initialJ2": "BLUE",
+  "initialJ3": "YELLOW",
+  "maxMistakes": 2,
+  "maxConcurrentVehicles": 3,
+  "spawnPreparationMs": 1000,
+  "hint": "Kusursuz teslimat serisi görevi! Seri çarpanını yüksek tutun."
+}

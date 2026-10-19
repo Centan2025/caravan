@@ -1,0 +1,30 @@
+{
+  "id": 17,
+  "title": "Seviye 17: İkili Paket Akışı",
+  "mode": "progressive",
+  "district": "industrial",
+  "levelFamily": "timing",
+  "primaryChallenge": "Ardışık ikililer",
+  "manifest": [
+    "Y",
+    "Y",
+    "G",
+    "R",
+    "B",
+    "B"
+  ],
+  "tickDurationMs": 750,
+  "spawnCadenceTicks": 3,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "RIGHT",
+  "initialJ2": "RED",
+  "initialJ3": "YELLOW",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": 3,
+  "spawnPreparationMs": 1000,
+  "hint": "İkili paket akışlarında doğru anda tetikleme."
+}

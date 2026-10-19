@@ -1,0 +1,24 @@
+{
+  "id": 2,
+  "title": "Seviye 2: İki Yönlü Dönüş",
+  "mode": "progressive",
+  "district": "suburb",
+  "levelFamily": "learning",
+  "primaryChallenge": "İki renkli sıra",
+  "manifest": [
+    "R",
+    "B"
+  ],
+  "tickDurationMs": 950,
+  "spawnCadenceTicks": 5,
+  "activeJunctions": [
+    "J2"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": 1,
+  "spawnPreparationMs": 1000,
+  "hint": "İlk tren Kırmızıya ulaştıktan sonra J2 makasını Maviye çevirin."
+}

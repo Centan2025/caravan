@@ -1,0 +1,33 @@
+{
+  "id": 26,
+  "title": "Seviye 26: Gece Ritmi",
+  "mode": "progressive",
+  "district": "night_express",
+  "levelFamily": "timing",
+  "primaryChallenge": "Gece ekspresi refleks testi",
+  "manifest": [
+    "G",
+    "B",
+    "Y",
+    "R",
+    "G",
+    "Y",
+    "B",
+    "R",
+    "G"
+  ],
+  "tickDurationMs": 700,
+  "spawnCadenceTicks": 2,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "RIGHT",
+  "initialJ2": "BLUE",
+  "initialJ3": "GREEN",
+  "maxMistakes": 2,
+  "maxConcurrentVehicles": 3,
+  "spawnPreparationMs": 1000,
+  "hint": "Hızlı gece vardiyası; her makas geçişi kritik önem taşır."
+}

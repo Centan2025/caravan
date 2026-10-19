@@ -1,0 +1,29 @@
+{
+  "id": 14,
+  "title": "Seviye 14: Uç İstasyonlar",
+  "mode": "progressive",
+  "district": "industrial",
+  "levelFamily": "priority",
+  "primaryChallenge": "Mavi ve Sarı uç rota yönetimi",
+  "manifest": [
+    "Y",
+    "B",
+    "Y",
+    "B",
+    "R"
+  ],
+  "tickDurationMs": 750,
+  "spawnCadenceTicks": 3,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "RIGHT",
+  "initialJ2": "BLUE",
+  "initialJ3": "YELLOW",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": 2,
+  "spawnPreparationMs": 1000,
+  "hint": "Uç istasyonlar (Y ve B) arasında hızlı yön değiştirme ritmi."
+}

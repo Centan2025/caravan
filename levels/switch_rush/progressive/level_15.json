@@ -1,0 +1,30 @@
+{
+  "id": 15,
+  "title": "Seviye 15: Fabrika Çatalı",
+  "mode": "progressive",
+  "district": "industrial",
+  "levelFamily": "route_selection",
+  "primaryChallenge": "Çapraz hat koordinasyonu",
+  "manifest": [
+    "G",
+    "R",
+    "Y",
+    "B",
+    "G",
+    "R"
+  ],
+  "tickDurationMs": 750,
+  "spawnCadenceTicks": 3,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "RIGHT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": 3,
+  "spawnPreparationMs": 1000,
+  "hint": "Çapraz hat koordinasyonu: J1, J2 ve J3 dengesini koruyun."
+}

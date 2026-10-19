@@ -1,0 +1,34 @@
+{
+  "id": 7,
+  "title": "Senaryo 7",
+  "mode": "classic",
+  "district": null,
+  "levelFamily": null,
+  "primaryChallenge": null,
+  "manifest": [
+    "R",
+    "B",
+    "Y",
+    "G",
+    "Y",
+    "B",
+    "R",
+    "G",
+    "R",
+    "B"
+  ],
+  "tickDurationMs": 700,
+  "spawnCadenceTicks": 2,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": null,
+  "spawnPreparationMs": null,
+  "hint": null
+}

@@ -1,0 +1,32 @@
+{
+  "id": 4,
+  "title": "Senaryo 4",
+  "mode": "classic",
+  "district": null,
+  "levelFamily": null,
+  "primaryChallenge": null,
+  "manifest": [
+    "R",
+    "B",
+    "G",
+    "Y",
+    "B",
+    "R",
+    "G",
+    "Y"
+  ],
+  "tickDurationMs": 700,
+  "spawnCadenceTicks": 2,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": null,
+  "spawnPreparationMs": null,
+  "hint": null
+}

@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MINI RAIL CITY — Tasarım Karşılaştırma & İnceleme Paneli</title>
+  <style>
+    :root {
+      --bg-dark: #12161f;
+      --card-bg: #1c2333;
+      --card-border: #2e3a50;
+      --accent-gold: #f59e0b;
+      --accent-green: #10b981;
+      --accent-blue: #3b82f6;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 24px;
+      line-height: 1.5;
+    }
+
+    header {
+      max-width: 1300px;
+      margin: 0 auto 24px auto;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 18px;
+    }
+
+    .badge-bar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-gold { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .badge-green { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      max-width: 900px;
+    }
+
+    /* CONTROLS TOOLBAR */
+    .toolbar {
+      max-width: 1300px;
+      margin: 0 auto 24px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 12px 18px;
+      border-radius: 12px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 6px;
+      background: #10141d;
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+    }
+
+    .view-btn {
+      padding: 6px 14px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .view-btn.active {
+      background: var(--accent-gold);
+      color: #000;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    }
+
+    .live-links {
+      display: flex;
+      gap: 10px;
+    }
+
+    .live-link-btn {
+      padding: 8px 14px;
+      background: #2563eb;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .live-link-btn:hover {
+      background: #1d4ed8;
+    }
+
+    /* COMPARISON GRID */
+    .comparison-grid {
+      max-width: 1300px;
+      margin: 0 auto 36px auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 1050px) {
+      .comparison-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .scene-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .scene-card:hover {
+      border-color: var(--accent-gold);
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--card-border);
+      background: #171d2b;
+    }
+
+    .card-tag {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .preview-container {
+      background: #0b0e14;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 480px;
+      border-bottom: 1px solid var(--card-border);
+      position: relative;
+    }
+
+    .preview-img {
+      max-width: 100%;
+      height: auto;
+      max-height: 520px;
+      border-radius: 12px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+      cursor: zoom-in;
+      transition: transform 0.2s;
+    }
+
+    .preview-img:hover {
+      transform: scale(1.02);
+    }
+
+    .card-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .spec-item {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #232c3f;
+      padding-bottom: 6px;
+      font-size: 13px;
+    }
+
+    .spec-label { color: var(--text-muted); }
+    .spec-value { font-weight: 700; color: #ffffff; }
+
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .feature-list li::before {
+      content: "✔";
+      color: var(--accent-green);
+      font-weight: bold;
+    }
+
+    /* SPECIFICATION & MAPPING SECTION */
+    .section-wrap {
+      max-width: 1300px;
+      margin: 0 auto 36px auto;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent-gold);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 12px;
+    }
+
+    .matrix-table th {
+      background: #141a24;
+      color: var(--text-muted);
+      text-align: left;
+      padding: 10px 12px;
+      border: 1px solid var(--card-border);
+      font-weight: 700;
+    }
+
+    .matrix-table td {
+      padding: 10px 12px;
+      border: 1px solid var(--card-border);
+      color: #e2e8f0;
+    }
+
+    .matrix-table tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      cursor: zoom-out;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-overlay img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="badge-bar">
+      <span class="badge badge-gold">🎨 Yeni Sanat Yönü</span>
+      <span class="badge badge-green">✔ 3 Örnek Sahne Doğrulandı</span>
+      <span class="badge badge-gold">🚀 Premium Casual Railway Diorama</span>
+    </div>
+    <h1>MINI RAIL CITY — Tasarım Karşılaştırma & İnceleme Paneli</h1>
+    <p class="subtitle">
+      Teknik diyagram görünümü tamamen terk edilerek oyuncak tren estetiğinde, pastel ve sıcak renk paletine sahip, gerçek fiziksel ray ayrımları ve 2.5D binalar içeren kompakt masaüstü demiryolu maketi mimarisi oluşturuldu.
+    </p>
+  </header>
+
+  <!-- CONTROLS TOOLBAR -->
+  <div class="toolbar">
+    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+      <span style="font-size: 13px; font-weight: 700; color: var(--text-muted);">Cihaz Çözünürlüğü:</span>
+      <div class="btn-group">
+        <button class="view-btn active" onclick="setResolution('540x960_native')">📐 Phaser Yerel (540×960)</button>
+        <button class="view-btn" onclick="setResolution('390x844_iphone')">📱 iPhone 14 (390×844)</button>
+        <button class="view-btn" onclick="setResolution('360x800_android')">🤖 Android (360×800)</button>
+      </div>
+    </div>
+
+    <div class="live-links">
+      <a href="/?mode=minirail&level=101" target="_blank" class="live-link-btn">▶️ Seviye 101 Oyna</a>
+      <a href="/?mode=minirail&level=104" target="_blank" class="live-link-btn">▶️ Seviye 104 Oyna</a>
+      <a href="/?mode=minirail&level=1032" target="_blank" class="live-link-btn">▶️ Seviye 103-B Oyna</a>
+    </div>
+  </div>
+
+  <!-- 3-SCENE COMPARISON GRID -->
+  <div class="comparison-grid">
+
+    <!-- SCENE A: Level 101 -->
+    <div class="scene-card">
+      <div class="card-header">
+        <div class="card-tag">Örnek A • Seviye 101</div>
+        <div class="card-title">Çayır & Vadi İstasyonu</div>
+        <div class="card-subtitle">Tek Park Cebi • Pastoral Kır Teması</div>
+      </div>
+      <div class="preview-container">
+        <img id="img-101" class="preview-img" src="screenshots/minirail/540x960_native_lvl_101_meadow.png" alt="Seviye 101 Çayır Diorama" onclick="openModal(this.src)">
+      </div>
+      <div class="card-body">
+        <div class="spec-item">
+          <span class="spec-label">Topoloji:</span>
+          <span class="spec-value">siding_topology_l1</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Park Cebi Kapasitesi:</span>
+          <span class="spec-value">1 Vagon (Sol Peron)</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Görsel Karakter:</span>
+          <span class="spec-value">Pastel Yeşil Çayır & Gölet</span>
+        </div>
+        <ul class="feature-list">
+          <li>Ahşap diorama masası kenarlığı ve yumuşak vadi yükseltileri.</li>
+          <li>Minyatür mavi gölet, dalga halesi ve ahşap çiftlik çiti.</li>
+          <li>Kırmızı & Mavi üçgen çatılı pastoral istasyon binaları.</li>
+          <li>Pirinç gövdeli döner kollu makas feneri ve kilit göstergesi.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- SCENE B: Level 104 Dual -->
+    <div class="scene-card">
+      <div class="card-header">
+        <div class="card-tag">Örnek B • Seviye 104 Dual</div>
+        <div class="card-title">Lojistik Dağıtım Garı</div>
+        <div class="card-subtitle">Çift Bağımsız Park Cebi • Liman & Antrepo Teması</div>
+      </div>
+      <div class="preview-container">
+        <img id="img-104" class="preview-img" src="screenshots/minirail/540x960_native_lvl_104_logistics_dual.png" alt="Seviye 104 Dual Siding" onclick="openModal(this.src)">
+      </div>
+      <div class="card-body">
+        <div class="spec-item">
+          <span class="spec-label">Topoloji:</span>
+          <span class="spec-value">siding_topology_l104_dual</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Park Cebi Kapasitesi:</span>
+          <span class="spec-value">2 Bağımsız Cep (Peron A & B)</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Görsel Karakter:</span>
+          <span class="spec-value">Taş Parke Gar & Vinç</span>
+        </div>
+        <ul class="feature-list">
+          <li>Kuzey-Sol (Peron A) ve Güney-Sağ (Peron B) kademeli yerleşim.</li>
+          <li>Renkli kargo kasaları, sarı yükleme vinci ve antrepo deposu.</li>
+          <li>4 vagonluk çift sollama için genişletilmiş ray koridoru.</li>
+          <li>Kırmızı ve Mavi antrepo terminalleri.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- SCENE C: Level 103-B FIFO -->
+    <div class="scene-card">
+      <div class="card-header">
+        <div class="card-tag">Örnek C • Seviye 103-B FIFO</div>
+        <div class="card-title">Maden & Kanyon Garı</div>
+        <div class="card-subtitle">2-Vagonluk FIFO İskelesi • Kavisli Baypas Teması</div>
+      </div>
+      <div class="preview-container">
+        <img id="img-1032" class="preview-img" src="screenshots/minirail/540x960_native_lvl_103b_quarry_fifo.png" alt="Seviye 103-B FIFO Quarry" onclick="openModal(this.src)">
+      </div>
+      <div class="card-body">
+        <div class="spec-item">
+          <span class="spec-label">Topoloji:</span>
+          <span class="spec-value">siding_topology_l103_fifo</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Park Cebi Kapasitesi:</span>
+          <span class="spec-value">2 Vagon (Tek Cepte FIFO)</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Görsel Karakter:</span>
+          <span class="spec-value">Terracotta Kanyon & Kaya Blokları</span>
+        </div>
+        <ul class="feature-list">
+          <li>Ana hat kanyon kayasının etrafından sağa doğru kavis çizerek baypas yapar.</li>
+          <li>Uzun endüstriyel park iskelesinde #1 ve #2 numaralı vagon durakları.</li>
+          <li>Maden ocağı cevher yükleme iskelesi ve dağ çamları.</li>
+          <li>Kızıl Maden Deposu ve Gök Cevher Terminali.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SPATIAL & GRAPH MAPPING REPORT -->
+  <div class="section-wrap">
+    <div class="section-title">📊 Simülasyon Çizgesi & Görsel Yerleşim Eşleme Matrisi</div>
+    <p style="color: var(--text-muted); font-size: 13px;">
+      Görsel düzenlemeler tamamen bağımsız bir sunum katmanında (<code>MiniRailDioramaLayouts.ts</code>) hesaplanmış olup, <code>GraphSwitchNetwork</code>'teki düğüm ve kenar bağlantıları birebir korunmuştur. Olmayan hiçbir ray eklenmemiştir.
+    </p>
+
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th>Örnek Sahne</th>
+          <th>Çizge Düğümleri (Mantıksal)</th>
+          <th>Makas Sayısı & Kollar</th>
+          <th>Mekânsal Yerleşim Farkı</th>
+          <th>Fiziksel Ayrım Estetiği</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>A. Seviye 101</strong></td>
+          <td>SOURCE, SW_SIDING, SIDING_BAY, MERGE, SW_STATION, RED, BLUE (7 Düğüm)</td>
+          <td>2 Makas (MAIN/SIDING, RED/BLUE)</td>
+          <td>Sola doğru tatlı bir S-kavisle ayrılan pastoral kırsal cep.</td>
+          <td>Balast çakılı, ahşap traversler, minyatür gölet ve çit çevre objeleri.</td>
+        </tr>
+        <tr>
+          <td><strong>B. Seviye 104 Dual</strong></td>
+          <td>SOURCE, SW_A, SIDING_A, MERGE_A, SW_B, SIDING_B, MERGE_B, SW_STATION, RED, BLUE (10 Düğüm)</td>
+          <td>3 Makas (SW_A, SW_B, SW_STATION)</td>
+          <td>Kuzey-Sol ve Güney-Sağ olarak mekânsal olarak zikzak ayrılan çift peron.</td>
+          <td>Taş parke zemin, liman vinci, kargo kasası istifleri ve antrepo binaları.</td>
+        </tr>
+        <tr>
+          <td><strong>C. Seviye 103-B FIFO</strong></td>
+          <td>SOURCE, SW_SIDING, SIDING_BAY (Kapasite 2), MERGE, SW_STATION, RED, BLUE (7 Düğüm)</td>
+          <td>2 Makas (MAIN/SIDING, RED/BLUE)</td>
+          <td>Ana hat kanyon kayasının etrafından kavis çizerken cep solda uzun iskele olarak uzanır.</td>
+          <td>Terracotta kanyon zemini, kaya blokları, 2 duraklı uzun iskele platformu.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODAL FOR FULLSCREEN IMAGE ZOOM -->
+  <div id="modal" class="modal-overlay" onclick="closeModal()">
+    <img id="modal-img" src="" alt="Büyütülmüş Görünüm">
+  </div>
+
+  <script>
+    let currentResolution = '540x960_native';
+
+    function setResolution(res) {
+      currentResolution = res;
+      document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+
+      document.getElementById('img-101').src = `screenshots/minirail/${res}_lvl_101_meadow.png`;
+      document.getElementById('img-104').src = `screenshots/minirail/${res}_lvl_104_logistics_dual.png`;
+      document.getElementById('img-1032').src = `screenshots/minirail/${res}_lvl_103b_quarry_fifo.png`;
+    }
+
+    function openModal(src) {
+      document.getElementById('modal-img').src = src;
+      document.getElementById('modal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+  </script>
+
+</body>
+</html>

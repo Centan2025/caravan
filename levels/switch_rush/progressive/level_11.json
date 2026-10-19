@@ -1,0 +1,29 @@
+{
+  "id": 11,
+  "title": "Seviye 11: Şehir İçi Trafik",
+  "mode": "progressive",
+  "district": "downtown",
+  "levelFamily": "traffic",
+  "primaryChallenge": "İki eşzamanlı araç akışı",
+  "manifest": [
+    "R",
+    "B",
+    "G",
+    "Y",
+    "R"
+  ],
+  "tickDurationMs": 800,
+  "spawnCadenceTicks": 3,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": 2,
+  "spawnPreparationMs": 1000,
+  "hint": "Aynı anda 2 tren hareket ederken rotaları birbirini engellemeden kurun."
+}

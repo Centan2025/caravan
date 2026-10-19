@@ -1,0 +1,25 @@
+{
+  "id": 5,
+  "title": "Seviye 5: Ana Hat Değişimi",
+  "mode": "progressive",
+  "district": "suburb",
+  "levelFamily": "route_selection",
+  "primaryChallenge": "Ana hat yönlendirme",
+  "manifest": [
+    "G",
+    "R",
+    "G"
+  ],
+  "tickDurationMs": 900,
+  "spawnCadenceTicks": 4,
+  "activeJunctions": [
+    "J1"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": 1,
+  "spawnPreparationMs": 1000,
+  "hint": "J1 ana makasını kullanarak trenleri doğru yakaya dağıtın."
+}

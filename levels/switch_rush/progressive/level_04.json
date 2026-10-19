@@ -1,0 +1,24 @@
+{
+  "id": 4,
+  "title": "Seviye 4: Ana Makas (J1)",
+  "mode": "progressive",
+  "district": "suburb",
+  "levelFamily": "learning",
+  "primaryChallenge": "Ana makas ayrımı",
+  "manifest": [
+    "R",
+    "G"
+  ],
+  "tickDurationMs": 900,
+  "spawnCadenceTicks": 5,
+  "activeJunctions": [
+    "J1"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": 1,
+  "spawnPreparationMs": 1000,
+  "hint": "J1 ana makası trenleri Sol (Kırmızı) veya Sağ (Yeşil) hatta yönlendirir."
+}

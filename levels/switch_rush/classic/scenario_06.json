@@ -1,0 +1,32 @@
+{
+  "id": 6,
+  "title": "Senaryo 6",
+  "mode": "classic",
+  "district": null,
+  "levelFamily": null,
+  "primaryChallenge": null,
+  "manifest": [
+    "R",
+    "G",
+    "R",
+    "G",
+    "B",
+    "Y",
+    "B",
+    "Y"
+  ],
+  "tickDurationMs": 700,
+  "spawnCadenceTicks": 2,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": null,
+  "spawnPreparationMs": null,
+  "hint": null
+}

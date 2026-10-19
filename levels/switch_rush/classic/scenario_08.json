@@ -1,0 +1,34 @@
+{
+  "id": 8,
+  "title": "Senaryo 8",
+  "mode": "classic",
+  "district": null,
+  "levelFamily": null,
+  "primaryChallenge": null,
+  "manifest": [
+    "G",
+    "R",
+    "Y",
+    "B",
+    "G",
+    "B",
+    "Y",
+    "R",
+    "G",
+    "Y"
+  ],
+  "tickDurationMs": 700,
+  "spawnCadenceTicks": 2,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": null,
+  "spawnPreparationMs": null,
+  "hint": null
+}

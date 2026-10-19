@@ -1,0 +1,30 @@
+{
+  "id": 12,
+  "title": "Seviye 12: Downtown Ekspres Ustalığı",
+  "mode": "progressive",
+  "district": "downtown",
+  "levelFamily": "mastery",
+  "primaryChallenge": "Bölge 2 Ustalık Sınavı",
+  "manifest": [
+    "R",
+    "Y",
+    "B",
+    "G",
+    "R",
+    "Y"
+  ],
+  "tickDurationMs": 800,
+  "spawnCadenceTicks": 3,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": 2,
+  "spawnPreparationMs": 1000,
+  "hint": "Downtown Ekspres Ustalığı! Şehir içi kargo dağıtımını hatasız tamamlayın."
+}

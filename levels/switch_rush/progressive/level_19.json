@@ -1,0 +1,30 @@
+{
+  "id": 19,
+  "title": "Seviye 19: Rıhtım Sevkiyatı",
+  "mode": "progressive",
+  "district": "harbor",
+  "levelFamily": "route_selection",
+  "primaryChallenge": "Deniz aşırı yük dağıtımı",
+  "manifest": [
+    "B",
+    "Y",
+    "B",
+    "Y",
+    "R",
+    "G"
+  ],
+  "tickDurationMs": 700,
+  "spawnCadenceTicks": 3,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "BLUE",
+  "initialJ3": "YELLOW",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": 3,
+  "spawnPreparationMs": 1000,
+  "hint": "Deniz aşırı yükler limana yanaşıyor; iskele hatlarını açık tutun."
+}

@@ -117,16 +117,17 @@
 
     .game-nav-tab {
       flex: 1;
-      padding: 8px 4px;
+      padding: 7px 2px;
       border: 1px solid transparent;
       background: transparent;
       color: var(--text-muted);
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       border-radius: 6px;
       cursor: pointer;
       text-align: center;
       transition: all 0.2s ease;
+      white-space: nowrap;
     }
 
     .game-nav-tab.active {
@@ -523,6 +524,47 @@
       gap: 8px;
       margin-top: 6px;
     }
+
+    /* COMPACT MOBILE HEADER (Saves ~120px vertical space for Phaser) */
+    @media (max-height: 900px), (max-width: 600px) {
+      header {
+        padding: 4px 8px !important;
+        margin-bottom: 2px !important;
+      }
+      .game-nav-container {
+        margin-bottom: 3px !important;
+        padding: 2px !important;
+      }
+      .game-nav-tab {
+        padding: 4px 2px !important;
+        font-size: 11px !important;
+      }
+      .brand-row {
+        margin-bottom: 3px !important;
+      }
+      .brand-title {
+        font-size: 13px !important;
+      }
+      .btn-sm {
+        padding: 4px 6px !important;
+        font-size: 11px !important;
+      }
+      .mode-toggle-container {
+        margin-bottom: 3px !important;
+        padding: 2px !important;
+      }
+      .mode-tab {
+        padding: 4px 4px !important;
+        font-size: 11px !important;
+      }
+      .control-row {
+        margin-top: 2px !important;
+      }
+      #level-select {
+        padding: 5px 8px !important;
+        font-size: 11px !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -531,9 +573,10 @@
     <header>
       <!-- Main Game Switcher Tabs -->
       <div class="game-nav-container">
-        <button id="nav-btn-chain" class="game-nav-tab active">🎯 Chain Domino</button>
-        <button id="nav-btn-switch" class="game-nav-tab">🔀 Switch Rush</button>
-        <button id="nav-btn-caravan" class="game-nav-tab">🐪 Caravan (B/C)</button>
+        <button id="nav-btn-chain" class="game-nav-tab active">🎯 Chain</button>
+        <button id="nav-btn-switch" class="game-nav-tab">🔀 Switch</button>
+        <button id="nav-btn-caravan" class="game-nav-tab">🐪 Caravan</button>
+        <button id="nav-btn-playtest" class="game-nav-tab" style="color: #48cae4; border: 1px solid rgba(72, 202, 228, 0.4);">🧪 Playtest</button>
       </div>
 
       <div class="brand-row">
@@ -563,6 +606,12 @@
         </button>
         <button id="switch-submode-original" class="mode-tab" title="Orijinal GDD 1.0 Senaryoları (10 Seviye)">
           ⚡ Classic (10 Senaryo)
+        </button>
+        <button id="switch-submode-siding" class="mode-tab" title="Siding Prototipi — Park Cebi Deneyi (7 Seviye)">
+          🅿️ Siding Deneyi (7 Seviye)
+        </button>
+        <button id="switch-submode-minirail" class="mode-tab" style="color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4);" title="Mini Rail City — Diorama Önizleme (3 Örnek)">
+          🚂 Mini Rail City (3 Örnek)
         </button>
       </div>
 
@@ -652,12 +701,15 @@
         </div>
       </div>
 
-      <div class="modal-actions">
-        <button id="btn-telemetry-download" class="primary-btn" style="padding: 10px; font-size: 13px;">
-          💾 JSON Olay Günlüğünü İndir
+      <div class="modal-actions" style="display: flex; gap: 6px; flex-wrap: wrap;">
+        <button id="btn-telemetry-download" class="primary-btn" style="flex: 1; padding: 10px; font-size: 12px;">
+          💾 JSON İndir
         </button>
-        <button id="btn-telemetry-copy" class="secondary-btn" style="padding: 10px; font-size: 13px;">
-          📋 JSON Kopyala
+        <button id="btn-telemetry-download-csv" class="primary-btn" style="flex: 1; padding: 10px; font-size: 12px; background: #2d6a4f; border-color: #52b788;">
+          📊 CSV İndir
+        </button>
+        <button id="btn-telemetry-copy" class="secondary-btn" style="flex: 1; padding: 10px; font-size: 12px;">
+          📋 Kopyala
         </button>
       </div>
     </div>

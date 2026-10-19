@@ -1,0 +1,28 @@
+{
+  "id": 9,
+  "title": "Seviye 9: Dört Renk Buluşması",
+  "mode": "progressive",
+  "district": "downtown",
+  "levelFamily": "route_selection",
+  "primaryChallenge": "3 makasın sakin entegrasyonu",
+  "manifest": [
+    "R",
+    "G",
+    "B",
+    "Y"
+  ],
+  "tickDurationMs": 850,
+  "spawnCadenceTicks": 4,
+  "activeJunctions": [
+    "J1",
+    "J2",
+    "J3"
+  ],
+  "initialJ1": "LEFT",
+  "initialJ2": "RED",
+  "initialJ3": "GREEN",
+  "maxMistakes": 3,
+  "maxConcurrentVehicles": 2,
+  "spawnPreparationMs": 1000,
+  "hint": "Dört rengin tamamı sahnede! Tren hedefine göre ilgili makası çevirin."
+}
