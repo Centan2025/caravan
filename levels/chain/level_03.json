@@ -1,0 +1,13 @@
+{
+  "id": 3,
+  "title": "Seviye 3: İkili Dalga (H)",
+  "grid": [
+    "D....",
+    "#....",
+    "GLHRG",
+    ".....",
+    "....."
+  ],
+  "maxIgnitions": 1,
+  "hint": "H karosu yatayda her iki yana birden darbe yayar."
+}

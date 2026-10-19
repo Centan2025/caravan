@@ -1,0 +1,13 @@
+{
+  "id": 4,
+  "title": "Seviye 4: Dikey Çatal (V)",
+  "grid": [
+    "..G..",
+    "..U..",
+    "..V.R",
+    "..D..",
+    "..G.."
+  ],
+  "maxIgnitions": 1,
+  "hint": "V karosu dikeyde iki yöne birden yayılır."
+}

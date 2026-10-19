@@ -1,0 +1,13 @@
+{
+  "id": 2,
+  "title": "Seviye 2: Köşeyi Dönmek",
+  "grid": [
+    "RRRD.",
+    "...D.",
+    "...D.",
+    "...G.",
+    "L...."
+  ],
+  "maxIgnitions": 1,
+  "hint": "Hedefe doğru dönen oku bulun."
+}

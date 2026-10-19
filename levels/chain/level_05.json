@@ -1,0 +1,13 @@
+{
+  "id": 5,
+  "title": "Seviye 5: Çift Kanat",
+  "grid": [
+    "G...G",
+    "U...U",
+    "ULHRU",
+    ".....",
+    "...D."
+  ],
+  "maxIgnitions": 1,
+  "hint": "Merkezdeki bölücü iki kanadı birden yukarı yönlendirir."
+}

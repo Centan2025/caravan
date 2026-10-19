@@ -1,0 +1,13 @@
+{
+  "id": 1,
+  "title": "Seviye 1: İlk Kıvılcım",
+  "grid": [
+    "....G",
+    "....U",
+    "....U",
+    "....U",
+    "....U"
+  ],
+  "maxIgnitions": 1,
+  "hint": "En alttaki oku ateşleyerek zinciri yukarıya doğru başlatın."
+}

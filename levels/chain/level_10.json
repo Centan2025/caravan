@@ -1,0 +1,13 @@
+{
+  "id": 10,
+  "title": "Seviye 10: Dörtlü Hasat",
+  "grid": [
+    "....D",
+    "....G",
+    "GLHRG",
+    "##.##",
+    "RRRG."
+  ],
+  "maxIgnitions": 3,
+  "hint": "Dört altını da toplamak için en verimli 3 ateşlemeyi planlayın."
+}

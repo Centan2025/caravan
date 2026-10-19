@@ -1,0 +1,13 @@
+{
+  "id": 6,
+  "title": "Seviye 6: İki Ayrı Hat",
+  "grid": [
+    "RD#..",
+    ".D#..",
+    ".G#G.",
+    "..#U.",
+    "D.#UL"
+  ],
+  "maxIgnitions": 2,
+  "hint": "Duvarla ayrılmış iki farklı hedef için iki ateşleme hakkınızı kullanın."
+}

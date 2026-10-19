@@ -1,0 +1,13 @@
+{
+  "id": 9,
+  "title": "Seviye 9: Üçlü Oda",
+  "grid": [
+    "D.#.D",
+    "G.#.G",
+    "#####",
+    "..D.L",
+    "..G.#"
+  ],
+  "maxIgnitions": 3,
+  "hint": "Üç ayrı bağımsız bölgedeki hedefleri sırayla vurun."
+}

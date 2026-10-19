@@ -1,0 +1,13 @@
+{
+  "id": 7,
+  "title": "Seviye 7: Çifte Kemer",
+  "grid": [
+    "DL#D.",
+    "GU#..",
+    "#####",
+    "..#DG",
+    "..#RU"
+  ],
+  "maxIgnitions": 2,
+  "hint": "Duvarla ayrılmış iki farklı kıvrımlı hattı sırayla ateşleyin."
+}

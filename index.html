@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>CARAVAN — İpek Yolu Yol Bulmacası (Mod B vs Mod C)</title>
+  <style>
+    :root {
+      --primary: #c07d39;
+      --primary-dark: #8c531b;
+      --secondary: #2b3a4a;
+      --bg: #1c1510;
+      --card-bg: #2a211a;
+      --card-border: #4d3a2b;
+      --text: #f5ede4;
+      --text-muted: #bfa895;
+      --accent-green: #2d6a4f;
+      --accent-blue: #1d3557;
+      --accent-red: #c0392b;
+      --accent-gold: #f39c12;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-x: hidden;
+    }
+
+    #app-wrapper {
+      width: 100%;
+      max-width: 540px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding-bottom: 20px;
+    }
+
+    /* TOP HEADER */
+    header {
+      width: 100%;
+      background: linear-gradient(180deg, #2c1e14 0%, #20150d 100%);
+      border-bottom: 2px solid var(--primary-dark);
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .brand-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-title {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: var(--accent-gold);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-sm {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-sm:hover {
+      background: #3c2f25;
+      border-color: var(--primary);
+    }
+
+    /* GAME NAV TABS */
+    .game-nav-container {
+      display: flex;
+      gap: 6px;
+      width: 100%;
+      background: #150e09;
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      margin-bottom: 8px;
+    }
+
+    .game-nav-tab {
+      flex: 1;
+      padding: 8px 4px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+
+    .game-nav-tab.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: #f39c12;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    }
+
+    /* MODE TOGGLE */
+    .mode-toggle-container {
+      display: flex;
+      background: #170f0a;
+      padding: 3px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+    }
+
+    .mode-tab {
+      flex: 1;
+      padding: 7px 6px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+
+    .mode-tab.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    }
+
+    /* LEVEL & STATUS BAR */
+    .control-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .level-select-wrap select {
+      background: #1e150f;
+      border: 1px solid var(--primary-dark);
+      color: var(--accent-gold);
+      font-weight: 700;
+      font-size: 13px;
+      padding: 5px 8px;
+      border-radius: 6px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .stats-group {
+      display: flex;
+      gap: 12px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .stat-pill {
+      background: #1c140d;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+    }
+
+    .stat-pill span {
+      color: var(--accent-gold);
+      font-weight: 800;
+    }
+
+    /* PROGRESS TRAIL HUD */
+    .progress-hud {
+      width: 100%;
+      padding: 6px 14px;
+      background: #201710;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .route-flow {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .hud-badge {
+      padding: 3px 7px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      background: #2a2018;
+      border: 1px solid var(--card-border);
+    }
+
+    .badge-producer {
+      color: #74c69d;
+      border-color: #2d6a4f;
+    }
+
+    .badge-inn {
+      color: #8ecae6;
+      border-color: #1d3557;
+      transition: all 0.2s;
+    }
+
+    .badge-inn.badge-completed {
+      background: #1d3557;
+      color: #ffffff;
+      border-color: #48cae4;
+      box-shadow: 0 0 8px rgba(72, 202, 228, 0.4);
+    }
+
+    .badge-market {
+      color: #ffd166;
+      border-color: #d97706;
+    }
+
+    /* STATUS BANNER */
+    .status-banner {
+      width: calc(100% - 24px);
+      margin: 8px 12px 4px 12px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #261c14;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      transition: all 0.25s ease;
+    }
+
+    .status-running {
+      background: #1b263b;
+      border-color: #415a77;
+      color: #e0e1dd;
+    }
+
+    .status-success {
+      background: #1e3f20;
+      border-color: #2ecc71;
+      color: #a7f3d0;
+      box-shadow: 0 0 12px rgba(46, 204, 113, 0.3);
+    }
+
+    .status-failed {
+      background: #4a151b;
+      border-color: #e63946;
+      color: #fecdd3;
+      box-shadow: 0 0 12px rgba(230, 57, 70, 0.3);
+    }
+
+    /* GAME CANVAS CONTAINER */
+    #game-container {
+      width: 100%;
+      height: 520px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    #game-container canvas {
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    /* BOTTOM CONTROLS */
+    .action-panel {
+      width: 100%;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .primary-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #d48b3b 0%, #b36b20 100%);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(179, 107, 32, 0.4);
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .primary-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 6px rgba(179, 107, 32, 0.3);
+    }
+
+    .primary-btn:disabled {
+      background: #4a382c;
+      color: #8c7362;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    .secondary-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .secondary-btn {
+      flex: 1;
+      padding: 10px;
+      background: #251c14;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+
+    .secondary-btn:hover {
+      background: #33271d;
+      border-color: var(--primary);
+    }
+
+    .seed-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      background: #1e150f;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      font-size: 12px;
+    }
+
+    .seed-row input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--accent-gold);
+      font-size: 13px;
+      font-weight: 700;
+      outline: none;
+    }
+
+    /* TELEMETRY MODAL */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 16px;
+    }
+
+    .modal-overlay.hidden {
+      display: none;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 480px;
+      background: #221811;
+      border: 2px solid var(--primary);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      max-height: 85vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 8px;
+    }
+
+    .modal-header h3 {
+      font-size: 17px;
+      color: var(--accent-gold);
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .telemetry-card {
+      background: #18110b;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .card-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .card-val {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .reasons-list {
+      background: #18110b;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .vote-box {
+      background: #1b120a;
+      border: 1px dashed var(--primary);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .vote-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .vote-btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      background: #2a1f16;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app-wrapper">
+    <!-- Header -->
+    <header>
+      <!-- Main Game Switcher Tabs -->
+      <div class="game-nav-container">
+        <button id="nav-btn-chain" class="game-nav-tab active">🎯 Chain Domino</button>
+        <button id="nav-btn-switch" class="game-nav-tab">🔀 Switch Rush</button>
+        <button id="nav-btn-caravan" class="game-nav-tab">🐪 Caravan (B/C)</button>
+      </div>
+
+      <div class="brand-row">
+        <div id="brand-title-text" class="brand-title">
+          <span>🎯</span> CHAIN DOMINO
+        </div>
+        <div class="header-actions">
+          <button id="btn-sound" class="btn-sm">🔊 Ses Açık</button>
+          <button id="btn-telemetry" class="btn-sm" style="background: #39281a; border-color: var(--primary);">📊 Telemetri</button>
+        </div>
+      </div>
+
+      <!-- Mode Selector (Caravan) -->
+      <div id="caravan-mode-container" class="mode-toggle-container" style="display: none;">
+        <button id="mode-btn-b" class="mode-tab active" title="Kervan harekete geçmeden önce rotayı planla">
+          Mod B: Trade Chain
+        </button>
+        <button id="mode-btn-c" class="mode-tab" title="Kervan ilerlerken anlık karoları döndür">
+          Mod C: Caravan Rush
+        </button>
+      </div>
+
+      <!-- Switch Rush Submode Selector -->
+      <div id="switch-submode-container" class="mode-toggle-container" style="display: none;">
+        <button id="switch-submode-progressive" class="mode-tab active" title="Switch Rush 2.0 — Parcel Express (30 Seviye, 5 Bölge)">
+          🚀 Switch Rush 2.0 (30 Seviye)
+        </button>
+        <button id="switch-submode-original" class="mode-tab" title="Orijinal GDD 1.0 Senaryoları (10 Seviye)">
+          ⚡ Classic (10 Senaryo)
+        </button>
+      </div>
+
+      <!-- Level & Stats -->
+      <div class="control-row">
+        <div class="level-select-wrap">
+          <select id="level-select">
+            <option value="1">Seviye 1: Vaha Yolu (Düz)</option>
+            <option value="2">Seviye 2: Altın Kıvrım (Dirsek)</option>
+            <option value="3">Seviye 3: Vaha Çatalı (T-Kavşak)</option>
+            <option value="4">Seviye 4: Dörtyol Hanı (4-Yönlü)</option>
+            <option value="5">Seviye 5: Köşe Kervansarayı</option>
+            <option value="6">Seviye 6: Çıkmaz Labirenti</option>
+            <option value="7">Seviye 7: Saat Yönü Önceliği</option>
+            <option value="8">Seviye 8: İpek Koridoru</option>
+            <option value="9">Seviye 9: Çifte Kavşak Tuzağı</option>
+            <option value="10">Seviye 10: Büyük İpek Yolu</option>
+          </select>
+        </div>
+        <div class="stats-group">
+          <div class="stat-pill">Hamle: <span id="stat-moves">0</span></div>
+          <div class="stat-pill">Süre: <span id="stat-time">0.0s</span></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Progress HUD -->
+    <div class="progress-hud">
+      <div class="route-flow">
+        <span class="hud-badge badge-producer">Üretici (P)</span>
+        <span>➔</span>
+        <span id="inn-badge" class="hud-badge badge-inn">🏨 Han: Bekliyor...</span>
+        <span>➔</span>
+        <span class="hud-badge badge-market">Pazar (M)</span>
+      </div>
+    </div>
+
+    <!-- Status Banner -->
+    <div id="status-banner" class="status-banner">
+      Yol parçalarını dokunarak döndürün. Rota: Üretici ➔ Han ➔ Pazar.
+    </div>
+
+    <!-- Phaser Canvas Container -->
+    <div id="game-container"></div>
+
+    <!-- Bottom Actions -->
+    <div class="action-panel">
+      <button id="btn-primary-action" class="primary-btn">
+        🚀 Kervanı Başlat
+      </button>
+
+      <div class="secondary-row">
+        <button id="btn-edit" class="secondary-btn">✏️ Rotayı Düzelt</button>
+        <button id="btn-reset" class="secondary-btn">🔄 Sıfırla</button>
+        <button id="btn-hint" class="secondary-btn">💡 Çözüm İpucu</button>
+      </div>
+
+      <!-- Seed Sandbox Generator -->
+      <div class="seed-row">
+        <span>🎲 Seed:</span>
+        <input type="number" id="seed-input" placeholder="Rastgele Seed (Ör: 45821)" />
+        <button id="btn-load-seed" class="btn-sm">Üret / Yükle</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Telemetry Modal -->
+  <div id="telemetry-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>📊 Test & Telemetri Analizi</h3>
+        <button id="btn-telemetry-close" class="modal-close-btn">✕</button>
+      </div>
+
+      <div id="telemetry-content">
+        <!-- Filled dynamically by UIManager -->
+      </div>
+
+      <!-- Mode Preference Vote -->
+      <div class="vote-box">
+        <div style="font-size: 13px; font-weight: 700; color: var(--accent-gold);">
+          Hangi oyun modunu daha akıcı / eğlenceli buldunuz?
+        </div>
+        <div class="vote-buttons">
+          <button id="btn-vote-b" class="vote-btn">Mod B (Trade Chain)</button>
+          <button id="btn-vote-c" class="vote-btn">Mod C (Caravan Rush)</button>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button id="btn-telemetry-download" class="primary-btn" style="padding: 10px; font-size: 13px;">
+          💾 JSON Olay Günlüğünü İndir
+        </button>
+        <button id="btn-telemetry-copy" class="secondary-btn" style="padding: 10px; font-size: 13px;">
+          📋 JSON Kopyala
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

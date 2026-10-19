@@ -1,0 +1,13 @@
+{
+  "id": 8,
+  "title": "Seviye 8: İkili Dalga ve Hat",
+  "grid": [
+    "D....",
+    "#....",
+    "GLHRG",
+    "#####",
+    "RRRRG"
+  ],
+  "maxIgnitions": 2,
+  "hint": "H bölücüsü ile iki hedefi, alttaki hat ile üçüncü hedefi toplayın."
+}
