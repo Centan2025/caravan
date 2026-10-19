@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Konsept B — Diagonal Rail Yard (390×844)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@600;700&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #0b0e14;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow: hidden;
+    }
+
+    /* Reference Mobile Device Viewport: 390 x 844 */
+    .mobile-frame {
+      width: 390px;
+      height: 844px;
+      background: radial-gradient(circle at 60% 40%, #1e2638 0%, #0f131c 100%);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.8), 0 0 0 12px #2d3748, 0 0 0 14px #1a202c;
+      border-radius: 48px;
+    }
+
+    /* Tactile Model Table Felt / Subtle Wood Plank Lines */
+    .felt-bg {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: 
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 2px, transparent 2px, transparent 28px);
+      pointer-events: none;
+    }
+
+    /* TOP HUD (Floating Frosted Glass) */
+    .top-hud {
+      position: absolute;
+      top: 24px;
+      left: 18px;
+      right: 18px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 100;
+    }
+
+    .hud-badge-pill {
+      background: rgba(30, 41, 59, 0.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 9999px;
+      height: 48px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    .level-num {
+      background: #3b82f6;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 8px;
+      border-radius: 9999px;
+    }
+
+    .level-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: #f8fafc;
+    }
+
+    .next-train-pill {
+      background: #e11d48;
+      color: #ffffff;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(225, 29, 72, 0.4);
+    }
+
+    .hud-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .hud-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(30, 41, 59, 0.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f8fafc;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    /* DIAGONAL DIORAMA APRON */
+    .diorama-canvas {
+      position: absolute;
+      top: 96px;
+      left: 12px;
+      width: 366px;
+      height: 660px;
+    }
+
+    /* BOTTOM BAR */
+    .bottom-bar {
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      right: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .hint-pill {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 9999px;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    .hint-pill span.dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #38bdf8;
+      box-shadow: 0 0 10px #38bdf8;
+    }
+  </style>
+</head>
+<body>
+
+<div class="mobile-frame">
+  <div class="felt-bg"></div>
+
+  <!-- TOP MODERN HUD -->
+  <div class="top-hud">
+    <div class="hud-badge-pill">
+      <span class="level-num">101</span>
+      <span class="level-name">Çapraz İstasyon</span>
+      <div class="next-train-pill">
+        <span>■</span>
+        <span>Sıradaki</span>
+      </div>
+    </div>
+    <div class="hud-actions">
+      <div class="hud-btn" title="Yeniden Başlat">⟲</div>
+      <div class="hud-btn" title="Duraklat">⏸</div>
+    </div>
+  </div>
+
+  <!-- DIAGONAL RAIL YARD (SVG SCENE LAYER) -->
+  <div class="diorama-canvas">
+    <svg width="366" height="660" viewBox="0 0 366 660">
+      <defs>
+        <filter id="shadowYard" x="-20%" y="-20%" width="150%" height="150%">
+          <feDropShadow dx="3" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.45"/>
+        </filter>
+        <filter id="trainShadow" x="-20%" y="-20%" width="150%" height="150%">
+          <feDropShadow dx="4" dy="10" stdDeviation="5" flood-color="#000000" flood-opacity="0.45"/>
+        </filter>
+        <filter id="glowCyan" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#38bdf8" flood-opacity="0.8"/>
+        </filter>
+        <filter id="plungerShadow" x="-20%" y="-20%" width="150%" height="150%">
+          <feDropShadow dx="0" dy="6" stdDeviation="4" flood-color="#000000" flood-opacity="0.5"/>
+        </filter>
+      </defs>
+
+      <!-- 1. SOFT WOODEN DIORAMA MAT (Rounded organic angled base) -->
+      <path d="M 30 60 C 180 20 320 80 340 180 C 360 320 330 520 280 620 C 180 650 60 590 30 460 C 10 320 10 180 30 60 Z" 
+            fill="#ede6da" filter="url(#shadowYard)"/>
+      <path d="M 38 68 C 180 30 312 88 332 182 C 350 316 322 510 274 610 C 180 638 68 580 38 456 C 20 320 20 184 38 68 Z" 
+            fill="#e5dccf"/>
+
+      <!-- 2. BALLAST ROADBEDS (Sweeping Diagonal Rail Network) -->
+      <!-- Source (75, 75) -> SW_SIDING (135, 185) -->
+      <path d="M 75 75 L 135 185" fill="none" stroke="#d5c8b5" stroke-width="28" stroke-linecap="round"/>
+
+      <!-- Siding Divergence: SW_SIDING (135, 185) -> SIDING_BAY (275, 195) -->
+      <path d="M 135 185 Q 185 130 275 195" fill="none" stroke="#d5c8b5" stroke-width="28" stroke-linecap="round"/>
+
+      <!-- Siding Convergence: SIDING_BAY (275, 195) -> MERGE (215, 385) -->
+      <path d="M 275 195 Q 310 295 215 385" fill="none" stroke="#d5c8b5" stroke-width="28" stroke-linecap="round"/>
+
+      <!-- Main Line Bypass: SW_SIDING (135, 185) -> MERGE (215, 385) -->
+      <path d="M 135 185 L 215 385" fill="none" stroke="#d5c8b5" stroke-width="28" stroke-linecap="round"/>
+
+      <!-- Merge (215, 385) -> SW_STATION (245, 465) -->
+      <path d="M 215 385 L 245 465" fill="none" stroke="#d5c8b5" stroke-width="28" stroke-linecap="round"/>
+
+      <!-- Station SW -> RED Station (135, 570) -->
+      <path d="M 245 465 Q 175 490 135 570" fill="none" stroke="#d5c8b5" stroke-width="28" stroke-linecap="round"/>
+
+      <!-- Station SW -> BLUE Station (290, 560) -->
+      <path d="M 245 465 Q 285 495 290 560" fill="none" stroke="#d5c8b5" stroke-width="28" stroke-linecap="round"/>
+
+      <!-- 3. WOODEN SLEEPERS (Cross-ties with Perpendicular Angles) -->
+      <g stroke="#453123" stroke-width="5" stroke-linecap="round">
+        <!-- Source to SW -->
+        <line x1="68" y1="95" x2="90" y2="82"/>
+        <line x1="79" y1="116" x2="101" y2="103"/>
+        <line x1="91" y1="137" x2="113" y2="124"/>
+        <line x1="102" y1="158" x2="124" y2="145"/>
+
+        <!-- Siding Arc Upper Spur -->
+        <line x1="148" y1="165" x2="164" y2="182"/>
+        <line x1="175" y1="150" x2="188" y2="170"/>
+        <line x1="206" y1="146" x2="214" y2="168"/>
+        <line x1="236" y1="154" x2="238" y2="178"/>
+        <line x1="262" y1="172" x2="258" y2="196"/>
+
+        <!-- Siding Return Arc -->
+        <line x1="282" y1="218" x2="260" y2="228"/>
+        <line x1="286" y1="252" x2="262" y2="258"/>
+        <line x1="278" y1="288" x2="256" y2="288"/>
+        <line x1="265" y1="322" x2="245" y2="315"/>
+        <line x1="245" y1="352" x2="230" y2="340"/>
+
+        <!-- Main Line Bypass -->
+        <line x1="135" y1="225" x2="157" y2="216"/>
+        <line x1="151" y1="265" x2="173" y2="256"/>
+        <line x1="167" y1="305" x2="189" y2="296"/>
+        <line x1="183" y1="345" x2="205" y2="336"/>
+
+        <!-- Merge to Station SW -->
+        <line x1="218" y1="410" x2="238" y2="400"/>
+        <line x1="228" y1="435" x2="248" y2="425"/>
+
+        <!-- SW to RED Station -->
+        <line x1="218" y1="486" x2="236" y2="474"/>
+        <line x1="188" y1="512" x2="202" y2="496"/>
+        <line x1="160" y1="538" x2="170" y2="520"/>
+        <line x1="138" y1="558" x2="144" y2="538"/>
+
+        <!-- SW to BLUE Station -->
+        <line x1="250" y1="492" x2="270" y2="486"/>
+        <line x1="265" y1="518" x2="285" y2="514"/>
+        <line x1="276" y1="544" x2="296" y2="542"/>
+      </g>
+
+      <!-- 4. POLISHED TWIN STEEL RAILS -->
+      <!-- Source to SW -->
+      <line x1="70" y1="78" x2="130" y2="188" stroke="#94a3b8" stroke-width="2.5"/>
+      <line x1="80" y1="72" x2="140" y2="182" stroke="#94a3b8" stroke-width="2.5"/>
+
+      <!-- Siding Upper Spur -->
+      <path d="M 130 188 Q 180 124 270 189" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+      <path d="M 140 182 Q 190 136 280 201" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+
+      <!-- Siding Return -->
+      <path d="M 270 189 Q 304 290 210 380" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+      <path d="M 280 201 Q 316 300 220 390" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+
+      <!-- Main Line Bypass -->
+      <line x1="130" y1="188" x2="210" y2="388" stroke="#94a3b8" stroke-width="2.5"/>
+      <line x1="140" y1="182" x2="220" y2="382" stroke="#94a3b8" stroke-width="2.5"/>
+
+      <!-- Merge to Station SW -->
+      <line x1="210" y1="388" x2="240" y2="468" stroke="#94a3b8" stroke-width="2.5"/>
+      <line x1="220" y1="382" x2="250" y2="462" stroke="#94a3b8" stroke-width="2.5"/>
+
+      <!-- SW to RED Station -->
+      <path d="M 240 468 Q 170 494 130 574" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+      <path d="M 250 462 Q 180 486 140 566" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+
+      <!-- SW to BLUE Station -->
+      <path d="M 240 468 Q 280 498 285 563" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+      <path d="M 250 462 Q 290 492 295 557" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+
+      <!-- ACTIVE LUMINOUS ROUTE (Cyan Glow for Siding Spur) -->
+      <path d="M 135 185 Q 185 130 275 195" fill="none" stroke="#38bdf8" stroke-width="3" filter="url(#glowCyan)"/>
+
+      <!-- 5. ELEVATED TIMBER SIDING SPUR (Park Cebi & Buffer) -->
+      <g transform="translate(235, 160)" filter="url(#shadowYard)">
+        <!-- Raised Platform Deck -->
+        <rect x="0" y="0" width="85" height="65" rx="8" fill="#3e2723" stroke="#8d6e63" stroke-width="2"/>
+        <rect x="4" y="4" width="77" height="57" rx="5" fill="#2d1e18"/>
+        <!-- Safety Hazard diagonal stripes -->
+        <rect x="6" y="8" width="6" height="49" fill="#eab308"/>
+        <line x1="6" y1="12" x2="12" y2="18" stroke="#000" stroke-width="2"/>
+        <line x1="6" y1="24" x2="12" y2="30" stroke="#000" stroke-width="2"/>
+        <line x1="6" y1="36" x2="12" y2="42" stroke="#000" stroke-width="2"/>
+        <!-- Dotted Park Slot -->
+        <rect x="20" y="14" width="52" height="36" rx="6" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="3 3"/>
+      </g>
+
+      <!-- TACTILE PLUNGER BUTTON (≥54px Touch Target) -->
+      <g transform="translate(305, 150)" filter="url(#plungerShadow)">
+        <circle cx="15" cy="15" r="26" fill="#047857" stroke="#34d399" stroke-width="2"/>
+        <circle cx="15" cy="13" r="22" fill="#10b981"/>
+        <polygon points="10,9 23,15 10,21" fill="#ffffff"/>
+        <text x="15" y="52" font-size="11" font-weight="800" fill="#10b981" text-anchor="middle">SAL</text>
+      </g>
+
+      <!-- 6. SOURCE DEPOT (Angled Brick Shed at Upper-Left) -->
+      <g transform="translate(32, 28) rotate(25)" filter="url(#shadowYard)">
+        <rect x="0" y="30" width="84" height="12" rx="4" fill="#94a3b8"/>
+        <rect x="6" y="4" width="72" height="34" rx="4" fill="#d97706" stroke="#92400e" stroke-width="2"/>
+        <polygon points="0,6 42,-8 84,6" fill="#b45309"/>
+        <ellipse cx="42" cy="38" rx="14" ry="16" fill="#0f172a"/>
+        <text x="42" y="20" font-size="10" font-weight="800" fill="#ffffff" text-anchor="middle">DEPO</text>
+      </g>
+
+      <!-- 7. FREIGHT TERMINALS (Bottom-Left and Bottom-Right) -->
+      <!-- RED FREIGHT STATION (Left, 135, 570) -->
+      <g transform="translate(75, 540)" filter="url(#shadowYard)">
+        <rect x="0" y="50" width="94" height="14" rx="4" fill="#94a3b8"/>
+        <line x1="0" y1="54" x2="94" y2="54" stroke="#e2e8f0" stroke-width="1.5"/>
+        <rect x="10" y="14" width="74" height="40" rx="4" fill="#fff1f2" stroke="#f43f5e" stroke-width="2"/>
+        <polygon points="4,16 47,-4 90,16" fill="#be123c"/>
+        <polygon points="8,16 47,-1 86,16" fill="#e11d48"/>
+        <rect x="18" y="26" width="24" height="28" rx="2" fill="#475569"/>
+        <!-- Prominent Square Emblem -->
+        <rect x="52" y="26" width="22" height="22" rx="4" fill="#e11d48"/>
+        <rect x="57" y="31" width="12" height="12" rx="2" fill="#ffffff"/>
+      </g>
+
+      <!-- BLUE MARITIME TERMINAL (Right, 290, 560) -->
+      <g transform="translate(230, 530)" filter="url(#shadowYard)">
+        <rect x="0" y="50" width="94" height="14" rx="4" fill="#94a3b8"/>
+        <line x1="0" y1="54" x2="94" y2="54" stroke="#e2e8f0" stroke-width="1.5"/>
+        <rect x="10" y="14" width="74" height="40" rx="4" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="2"/>
+        <path d="M 4 16 Q 47 -8 90 16 Z" fill="#0284c7"/>
+        <path d="M 8 16 Q 47 -4 86 16 Z" fill="#38bdf8"/>
+        <path d="M 20 54 L 20 36 Q 32 26 44 36 L 44 54 Z" fill="#0f172a"/>
+        <!-- Prominent Circle Emblem -->
+        <circle cx="64" cy="37" r="11" fill="#0284c7"/>
+        <circle cx="64" cy="37" r="6" fill="#ffffff"/>
+      </g>
+
+      <!-- 8. MECHANICAL SWITCH DIALS (Ø 56px) -->
+      <!-- SWITCH 1: SW_SIDING at (135, 185) -->
+      <g transform="translate(135, 185)" filter="url(#shadowYard)">
+        <circle cx="0" cy="0" r="28" fill="#1e293b" stroke="#f59e0b" stroke-width="3"/>
+        <circle cx="0" cy="0" r="22" fill="#0f172a"/>
+        <!-- Pointer to Siding Spur (Curves up-right) -->
+        <path d="M -10 -10 Q 0 0 14 -4" fill="none" stroke="#38bdf8" stroke-width="4.5" stroke-linecap="round"/>
+        <polygon points="14,-9 10,-2 17,-3" fill="#38bdf8"/>
+        <circle cx="28" cy="0" r="6" fill="#10b981" stroke="#059669" stroke-width="1.5"/>
+      </g>
+
+      <!-- SWITCH 2: SW_STATION at (245, 465) -->
+      <g transform="translate(245, 465)" filter="url(#shadowYard)">
+        <circle cx="0" cy="0" r="28" fill="#1e293b" stroke="#f59e0b" stroke-width="3"/>
+        <circle cx="0" cy="0" r="22" fill="#0f172a"/>
+        <!-- Pointer to RED Station (Curves down-left) -->
+        <path d="M 6 -12 Q 0 0 -12 12" fill="none" stroke="#f43f5e" stroke-width="4.5" stroke-linecap="round"/>
+        <polygon points="-14,14 -14,6 -6,8" fill="#f43f5e"/>
+        <circle cx="-28" cy="0" r="6" fill="#e11d48" stroke="#9f1239" stroke-width="1.5"/>
+      </g>
+
+      <!-- 9. TOY TRAIN VEHICLE (Red Freight Train on diagonal track) -->
+      <g transform="translate(100, 125) rotate(28)" filter="url(#trainShadow)">
+        <rect x="-14" y="-24" width="28" height="48" rx="4" fill="#0f172a"/>
+        <circle cx="-13" cy="-14" r="5" fill="#334155" stroke="#475569" stroke-width="1.5"/>
+        <circle cx="13" cy="-14" r="5" fill="#334155" stroke="#475569" stroke-width="1.5"/>
+        <circle cx="-13" cy="14" r="5" fill="#334155" stroke="#475569" stroke-width="1.5"/>
+        <circle cx="13" cy="14" r="5" fill="#334155" stroke="#475569" stroke-width="1.5"/>
+        <rect x="-13" y="-25" width="26" height="50" rx="8" fill="#e11d48"/>
+        <rect x="-10" y="-23" width="10" height="46" rx="4" fill="#ffffff" opacity="0.3"/>
+        <rect x="-11" y="-8" width="22" height="28" rx="5" fill="#ffe4e6"/>
+        <rect x="-7" y="0" width="14" height="14" rx="3" fill="#e11d48"/>
+        <rect x="-4" y="3" width="8" height="8" rx="1.5" fill="#ffffff"/>
+        <ellipse cx="0" cy="24" rx="6" ry="3" fill="#fef08a"/>
+      </g>
+
+    </svg>
+  </div>
+
+  <!-- BOTTOM HINT BAR -->
+  <div class="bottom-bar">
+    <div class="hint-pill">
+      <span class="dot"></span>
+      <span>Makas kadranına dokunarak rotayı ayarla</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

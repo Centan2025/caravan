@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Premium Toy Puzzle — Asset Design Sheet</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #12151c;
+      color: #f1f5f9;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .sheet-container {
+      width: 1200px;
+      background: #181d28;
+      border: 1px solid #2d3748;
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    }
+
+    header {
+      border-bottom: 1px solid #2d3748;
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .title-group h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .title-group h1 span {
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .title-group p {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-top: 6px;
+    }
+
+    .badge-tag {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid #f59e0b;
+      color: #fbbf24;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .grid-sections {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .asset-card {
+      background: #1f2737;
+      border: 1px solid #334155;
+      border-radius: 18px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .asset-card.span-2 { grid-column: span 2; }
+    .asset-card.span-3 { grid-column: span 3; }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 10px;
+    }
+
+    .card-header h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-header .spec {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #64748b;
+      background: #0f172a;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .preview-box {
+      background: radial-gradient(circle at center, #273142 0%, #171f2c 100%);
+      border: 1px solid #334155;
+      border-radius: 14px;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .notes {
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-top: 14px;
+    }
+
+    .notes strong { color: #f8fafc; }
+
+    /* SVG Styling Elements */
+    svg { overflow: visible; }
+  </style>
+</head>
+<body>
+
+<div class="sheet-container">
+  <header>
+    <div class="title-group">
+      <h1><span>SWITCH RUSH</span> — PREMIUM TOY PUZZLE ASSET SYSTEM</h1>
+      <p>Art Direction: Railbound tactile toy aesthetics + Mini Motorways clarity. High-contrast shapes, physical toy proportions.</p>
+    </div>
+    <div class="badge-tag">Design System Specification</div>
+  </header>
+
+  <div class="grid-sections">
+
+    <!-- 1. TRAIN VEHICLES -->
+    <div class="asset-card">
+      <div class="card-header">
+        <h2>🚂 1. Toy Trains (Lokomotif & Vagon)</h2>
+        <span class="spec">54 × 30 px (Chunky)</span>
+      </div>
+      <div class="preview-box">
+        <!-- RED TRAIN (Square Icon) -->
+        <svg width="120" height="90" viewBox="0 0 120 90">
+          <defs>
+            <filter id="shadowRed" x="-20%" y="-20%" width="150%" height="150%">
+              <feDropShadow dx="3" dy="8" stdDeviation="4" flood-color="#000000" flood-opacity="0.45"/>
+            </filter>
+            <linearGradient id="redBody" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ff4d6d"/>
+              <stop offset="100%" stop-color="#c9184a"/>
+            </linearGradient>
+            <linearGradient id="redRoof" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#fff0f3"/>
+              <stop offset="100%" stop-color="#ffccd5"/>
+            </linearGradient>
+          </defs>
+          <!-- Underchassis / Wheels -->
+          <rect x="22" y="54" width="76" height="8" rx="4" fill="#1e293b"/>
+          <circle cx="36" cy="62" r="7" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+          <circle cx="84" cy="62" r="7" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+          <!-- Main Toy Body -->
+          <rect x="20" y="24" width="80" height="34" rx="10" fill="url(#redBody)" filter="url(#shadowRed)"/>
+          <!-- Gloss Bevel Highlight -->
+          <rect x="22" y="26" width="76" height="12" rx="6" fill="#ffffff" opacity="0.3"/>
+          <!-- Cab Roof -->
+          <rect x="26" y="16" width="46" height="12" rx="4" fill="url(#redRoof)"/>
+          <circle cx="86" cy="18" r="6" fill="#d97706" stroke="#b45309" stroke-width="1.5"/>
+          <!-- Symbol: Square for Red (Color-Blind Accessible) -->
+          <rect x="42" y="32" width="14" height="14" rx="3" fill="#ffffff" filter="url(#shadowRed)"/>
+          <text x="60" y="82" font-size="11" font-weight="700" fill="#f43f5e" text-anchor="middle">■ RED FREIGHT</text>
+        </svg>
+
+        <!-- BLUE TRAIN (Circle Icon) -->
+        <svg width="120" height="90" viewBox="0 0 120 90">
+          <defs>
+            <filter id="shadowBlue" x="-20%" y="-20%" width="150%" height="150%">
+              <feDropShadow dx="3" dy="8" stdDeviation="4" flood-color="#000000" flood-opacity="0.45"/>
+            </filter>
+            <linearGradient id="blueBody" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#3b82f6"/>
+              <stop offset="100%" stop-color="#1d4ed8"/>
+            </linearGradient>
+            <linearGradient id="blueRoof" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#eff6ff"/>
+              <stop offset="100%" stop-color="#bfdbfe"/>
+            </linearGradient>
+          </defs>
+          <!-- Underchassis / Wheels -->
+          <rect x="22" y="54" width="76" height="8" rx="4" fill="#1e293b"/>
+          <circle cx="36" cy="62" r="7" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+          <circle cx="84" cy="62" r="7" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+          <!-- Main Toy Body -->
+          <rect x="20" y="24" width="80" height="34" rx="10" fill="url(#blueBody)" filter="url(#shadowBlue)"/>
+          <!-- Gloss Bevel Highlight -->
+          <rect x="22" y="26" width="76" height="12" rx="6" fill="#ffffff" opacity="0.3"/>
+          <!-- Cab Roof -->
+          <rect x="48" y="16" width="46" height="12" rx="4" fill="url(#blueRoof)"/>
+          <rect x="30" y="18" width="10" height="8" rx="2" fill="#d97706"/>
+          <!-- Symbol: Circle for Blue (Color-Blind Accessible) -->
+          <circle cx="70" cy="39" r="8" fill="#ffffff" filter="url(#shadowBlue)"/>
+          <text x="60" y="82" font-size="11" font-weight="700" fill="#60a5fa" text-anchor="middle">● BLUE PASSENGER</text>
+        </svg>
+      </div>
+      <p class="notes"><strong>Özellik:</strong> Kalın ahşap gövde, parlak lake kaplama, belirgin tekerlekler ve renk körlüğü için evrensel geometrik semboller (Kırmızı: Kare ■, Mavi: Daire ●).</p>
+    </div>
+
+    <!-- 2. TRACKS & BED -->
+    <div class="asset-card">
+      <div class="card-header">
+        <h2>🛤️ 2. Ray & Balast Geometrisi</h2>
+        <span class="spec">Genişlik: 28 px / Açıklık: 16 px</span>
+      </div>
+      <div class="preview-box">
+        <svg width="220" height="110" viewBox="0 0 220 110">
+          <defs>
+            <filter id="trackShadow" x="-10%" y="-10%" width="130%" height="130%">
+              <feDropShadow dx="0" dy="5" stdDeviation="3" flood-color="#000000" flood-opacity="0.35"/>
+            </filter>
+          </defs>
+          <!-- Gravel Ballast Bed -->
+          <path d="M 20 65 Q 110 30 200 65" fill="none" stroke="#d5c7b3" stroke-width="32" stroke-linecap="round" filter="url(#trackShadow)"/>
+          <!-- Wooden Ties (Cross-sleepers) -->
+          <g stroke="#4a3728" stroke-width="6" stroke-linecap="round">
+            <line x1="30" y1="46" x2="36" y2="76"/>
+            <line x1="60" y1="40" x2="64" y2="70"/>
+            <line x1="90" y1="36" x2="92" y2="66"/>
+            <line x1="120" y1="36" x2="118" y2="66"/>
+            <line x1="150" y1="40" x2="146" y2="70"/>
+            <line x1="180" y1="46" x2="174" y2="76"/>
+          </g>
+          <!-- Polished Twin Steel Rails -->
+          <path d="M 20 57 Q 110 22 200 57" fill="none" stroke="#64748b" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M 20 56 Q 110 21 200 56" fill="none" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M 20 67 Q 110 32 200 67" fill="none" stroke="#64748b" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M 20 66 Q 110 31 200 66" fill="none" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <p class="notes"><strong>Özellik:</strong> Sıcak kumtaşı balast yatağı, ceviz ağacı traversler ve pürüzsüz çelik çift raylar. Yumuşak zemin gölgesiyle tahtadan yükselir.</p>
+    </div>
+
+    <!-- 3. TACTILE SWITCH STAND -->
+    <div class="asset-card">
+      <div class="card-header">
+        <h2>🎛️ 3. Mekanik Makas Kadranı</h2>
+        <span class="spec">Ø 56 px (≥48px Touch Target)</span>
+      </div>
+      <div class="preview-box">
+        <svg width="200" height="110" viewBox="0 0 200 110">
+          <defs>
+            <filter id="dialShadow" x="-20%" y="-20%" width="150%" height="150%">
+              <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000000" flood-opacity="0.4"/>
+            </filter>
+            <radialGradient id="brassBevel" cx="50%" cy="50%" r="50%">
+              <stop offset="70%" stop-color="#fef08a"/>
+              <stop offset="100%" stop-color="#ca8a04"/>
+            </radialGradient>
+          </defs>
+          <!-- Switch Dial 1: Set to MAIN -->
+          <g transform="translate(50, 50)" filter="url(#dialShadow)">
+            <circle cx="0" cy="0" r="28" fill="#1e293b" stroke="url(#brassBevel)" stroke-width="3"/>
+            <circle cx="0" cy="0" r="22" fill="#0f172a"/>
+            <!-- Rotating Mechanical Needle (Straight) -->
+            <line x1="0" y1="16" x2="0" y2="-16" stroke="#fbbf24" stroke-width="4" stroke-linecap="round"/>
+            <polygon points="-5,-12 5,-12 0,-18" fill="#fbbf24"/>
+            <!-- Tactile side toggle lever -->
+            <rect x="24" y="-4" width="8" height="8" rx="2" fill="#ef4444"/>
+            <text x="0" y="38" font-size="10" font-weight="700" fill="#94a3b8" text-anchor="middle">HAT: DÜZ</text>
+          </g>
+
+          <!-- Switch Dial 2: Set to SIDING / DIVERGING -->
+          <g transform="translate(145, 50)" filter="url(#dialShadow)">
+            <circle cx="0" cy="0" r="28" fill="#1e293b" stroke="url(#brassBevel)" stroke-width="3"/>
+            <circle cx="0" cy="0" r="22" fill="#0f172a"/>
+            <!-- Rotating Mechanical Needle (Curved Left) -->
+            <path d="M 0 16 Q 0 0 -14 -10" fill="none" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
+            <polygon points="-12,-16 -6,-9 -16,-9" fill="#38bdf8"/>
+            <rect x="-32" y="-4" width="8" height="8" rx="2" fill="#10b981"/>
+            <text x="0" y="38" font-size="10" font-weight="700" fill="#38bdf8" text-anchor="middle">HAT: PARK</text>
+          </g>
+        </svg>
+      </div>
+      <p class="notes"><strong>Özellik:</strong> Emoji ve teknik metinler yerine doğrudan ray kavşağında dönen pirinç kadran ve fosforlu yön iğnesi. 56px rahat tek parmak dokunma alanı.</p>
+    </div>
+
+    <!-- 4. FREIGHT STATIONS -->
+    <div class="asset-card span-2">
+      <div class="card-header">
+        <h2>🏭 4. Hedef İstasyonlar & Kargo Antrepoları</h2>
+        <span class="spec">90 × 70 px (Düz kutu yerine mimari model)</span>
+      </div>
+      <div class="preview-box" style="justify-content: space-around;">
+        <!-- RED CARGO DEPOT -->
+        <svg width="180" height="120" viewBox="0 0 180 120">
+          <defs>
+            <filter id="bldgShadow" x="-20%" y="-20%" width="150%" height="150%">
+              <feDropShadow dx="2" dy="8" stdDeviation="5" flood-color="#000000" flood-opacity="0.35"/>
+            </filter>
+          </defs>
+          <!-- Concrete Platform -->
+          <rect x="20" y="80" width="140" height="14" rx="4" fill="#94a3b8" filter="url(#bldgShadow)"/>
+          <line x1="20" y1="84" x2="160" y2="84" stroke="#cbd5e1" stroke-width="2"/>
+          <!-- Brick Warehouse Body -->
+          <rect x="35" y="40" width="110" height="42" rx="4" fill="#fff1f2" stroke="#f43f5e" stroke-width="2" filter="url(#bldgShadow)"/>
+          <!-- Terracotta Pitched Roof -->
+          <polygon points="25,42 90,14 155,42" fill="#be123c"/>
+          <polygon points="30,42 90,17 150,42" fill="#e11d48"/>
+          <!-- Big Loading Bay Door -->
+          <rect x="50" y="52" width="34" height="30" rx="3" fill="#475569"/>
+          <!-- Universal Shape Icon: SQUARE -->
+          <g transform="translate(105, 52)">
+            <rect x="0" y="0" width="24" height="24" rx="5" fill="#e11d48" filter="url(#bldgShadow)"/>
+            <rect x="5" y="5" width="14" height="14" rx="2" fill="#ffffff"/>
+          </g>
+          <text x="90" y="112" font-size="12" font-weight="800" fill="#f43f5e" text-anchor="middle">KIRMIZI ANTREPO (■)</text>
+        </svg>
+
+        <!-- BLUE PASSENGER TERMINAL -->
+        <svg width="180" height="120" viewBox="0 0 180 120">
+          <!-- Concrete Platform -->
+          <rect x="20" y="80" width="140" height="14" rx="4" fill="#94a3b8" filter="url(#bldgShadow)"/>
+          <line x1="20" y1="84" x2="160" y2="84" stroke="#cbd5e1" stroke-width="2"/>
+          <!-- Modern White Pavilion Body -->
+          <rect x="35" y="40" width="110" height="42" rx="4" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="2" filter="url(#bldgShadow)"/>
+          <!-- Vaulted Curved Barrel Roof -->
+          <path d="M 25 42 Q 90 10 155 42 Z" fill="#0284c7"/>
+          <path d="M 30 42 Q 90 15 150 42 Z" fill="#38bdf8"/>
+          <!-- Glass Atrium Arch -->
+          <path d="M 50 82 L 50 60 Q 67 48 84 60 L 84 82 Z" fill="#0f172a"/>
+          <!-- Universal Shape Icon: CIRCLE -->
+          <g transform="translate(105, 52)">
+            <circle cx="12" cy="12" r="12" fill="#0284c7" filter="url(#bldgShadow)"/>
+            <circle cx="12" cy="12" r="7" fill="#ffffff"/>
+          </g>
+          <text x="90" y="112" font-size="12" font-weight="800" fill="#38bdf8" text-anchor="middle">MAVİ TERMİNAL (●)</text>
+        </svg>
+      </div>
+      <p class="notes"><strong>Özellik:</strong> Düz renkli kutu tasarımı terk edildi. Kırmızı için beşik çatılı kargo deposu, Mavi için kemerli modern terminal binası. Renk körleri için bina alınlığında büyük şekil armaları.</p>
+    </div>
+
+    <!-- 5. SIDING BAY & TACTILE DISPATCH BUTTON -->
+    <div class="asset-card">
+      <div class="card-header">
+        <h2>🅿️ 5. Park Cebi & Yaylı Plunger</h2>
+        <span class="spec">Berth: 120 × 50 px / Plunger: Ø 54 px</span>
+      </div>
+      <div class="preview-box">
+        <svg width="220" height="120" viewBox="0 0 220 120">
+          <defs>
+            <filter id="btn3d" x="-20%" y="-20%" width="150%" height="150%">
+              <feDropShadow dx="0" dy="8" stdDeviation="5" flood-color="#000000" flood-opacity="0.5"/>
+            </filter>
+          </defs>
+          <!-- Recessed Wooden Berth -->
+          <rect x="10" y="30" width="110" height="60" rx="8" fill="#3e2723" stroke="#8d6e63" stroke-width="2"/>
+          <rect x="14" y="34" width="102" height="52" rx="6" fill="#2d1e18"/>
+          <!-- Buffer Stop at Track End -->
+          <rect x="16" y="44" width="10" height="32" rx="3" fill="#eab308"/>
+          <line x1="16" y1="48" x2="26" y2="58" stroke="#000000" stroke-width="2"/>
+          <line x1="16" y1="62" x2="26" y2="72" stroke="#000000" stroke-width="2"/>
+          <!-- Parking Slot Marker -->
+          <rect x="34" y="44" width="65" height="32" rx="6" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="4 3"/>
+
+          <!-- Tactile Plunger Release Button (≥54px) -->
+          <g transform="translate(165, 60)" filter="url(#btn3d)">
+            <!-- Spring Base -->
+            <rect x="-18" y="10" width="36" height="12" rx="4" fill="#334155"/>
+            <line x1="-12" y1="12" x2="12" y2="12" stroke="#64748b" stroke-width="2"/>
+            <!-- Plunger Cap (Green Lacquer) -->
+            <circle cx="0" cy="0" r="26" fill="#059669" stroke="#34d399" stroke-width="2.5"/>
+            <circle cx="0" cy="-2" r="22" fill="#10b981"/>
+            <polygon points="-6,-6 10,0 -6,6" fill="#ffffff"/>
+            <text x="0" y="38" font-size="10" font-weight="800" fill="#34d399" text-anchor="middle">SAL</text>
+          </g>
+        </svg>
+      </div>
+      <p class="notes"><strong>Özellik:</strong> Ana hattan açıkça ayrılmış gömme ahşap park yuvası, sarı-siyah tampon bariyeri ve gerçek oyuncak hissi veren yaylı serbest bırakma butonu.</p>
+    </div>
+
+    <!-- 6. MINIMALIST MOBILE HUD -->
+    <div class="asset-card span-3">
+      <div class="card-header">
+        <h2>📱 6. Minimalist Premium Casual HUD & Ergonomi Sistemi</h2>
+        <span class="spec">Modern Frosted Glass Pill • Touch Targets ≥ 48px</span>
+      </div>
+      <div class="preview-box" style="padding: 24px 32px; justify-content: space-between;">
+        <!-- Level & Progress Pill -->
+        <div style="background: rgba(255,255,255,0.08); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.15); border-radius: 9999px; padding: 10px 20px; display: flex; align-items: center; gap: 14px;">
+          <span style="background: #f59e0b; color: #1e293b; font-weight: 800; font-size: 12px; padding: 3px 8px; border-radius: 9999px;">101</span>
+          <span style="font-weight: 700; font-size: 14px; color: #f8fafc;">Çayır Hattı</span>
+          <span style="color: #64748b;">|</span>
+          <span style="font-size: 13px; color: #94a3b8;">Hedef: <strong style="color: #34d399;">1/1</strong></span>
+        </div>
+
+        <!-- Train Queue Stream (Manifest) -->
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Sıradaki:</span>
+          <div style="background: #e11d48; color: #ffffff; border-radius: 12px; padding: 6px 14px; font-weight: 800; font-size: 12px; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(225,29,72,0.4);">
+            <span>■</span>
+            <span>Kırmızı Tren</span>
+          </div>
+        </div>
+
+        <!-- Action Controls (≥48px round buttons) -->
+        <div style="display: flex; gap: 12px;">
+          <div style="width: 48px; height: 48px; border-radius: 50%; background: #1e293b; border: 1px solid #475569; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #f8fafc; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+            ⏸
+          </div>
+          <div style="width: 48px; height: 48px; border-radius: 50%; background: #1e293b; border: 1px solid #475569; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #f8fafc; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+            ⟲
+          </div>
+        </div>
+      </div>
+      <p class="notes"><strong>Özellik:</strong> Eski yönetim paneli buton dizilimi ve ekranı kaplayan metin blokları tamamen kaldırıldı. Tüm etkileşim noktaları minimum 48px mobil dokunma standardında.</p>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

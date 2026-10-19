@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Level 101 — Graph Topology Mapping & Verification</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #0f131a;
+      color: #f1f5f9;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 1200px;
+      background: #181f2b;
+      border: 1px solid #2d3748;
+      border-radius: 24px;
+      padding: 36px;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    }
+
+    header {
+      border-bottom: 1px solid #334155;
+      padding-bottom: 20px;
+      margin-bottom: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    h1 span {
+      color: #38bdf8;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-top: 6px;
+    }
+
+    .grid-compare {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .col-card {
+      background: #1e2738;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .col-card h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin-bottom: 14px;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .col-card .badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .badge-math { background: #3b82f6; color: #ffffff; }
+    .badge-a { background: #f59e0b; color: #000000; }
+    .badge-b { background: #10b981; color: #ffffff; }
+
+    .diagram-box {
+      background: #111722;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      height: 480px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 14px;
+    }
+
+    th, td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+    }
+
+    th {
+      background: #111722;
+      color: #94a3b8;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+
+    td { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    td.status-pass { color: #34d399; font-weight: 700; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div>
+      <h1>LEVEL 101 TOPOLOGY — <span>1:1 MATHEMATICAL ISOMORPHISM</span></h1>
+      <p class="subtitle">Her iki konsept de oyunun çekirdek grafiğini ve mantıksal kurallarını %100 korur. Sahte döngü veya kayıp kenar yoktur.</p>
+    </div>
+    <div style="font-family: 'JetBrains Mono'; font-size: 12px; color: #34d399; background: rgba(52,211,153,0.1); border: 1px solid #34d399; padding: 6px 12px; border-radius: 8px;">
+      ✓ ISOMORPHISM VERIFIED
+    </div>
+  </header>
+
+  <div class="grid-compare">
+
+    <!-- COL 1: MATHEMATICAL GRAPH -->
+    <div class="col-card">
+      <h2>
+        <span>1. Mantıksal Graf (Core)</span>
+        <span class="badge badge-math">GRAPH MODEL</span>
+      </h2>
+      <div class="diagram-box">
+        <svg width="300" height="460" viewBox="0 0 300 460">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 9 5 L 0 9 z" fill="#64748b"/>
+            </marker>
+          </defs>
+
+          <!-- Edges -->
+          <line x1="150" y1="50" x2="150" y2="120" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+          <path d="M 150 120 Q 50 160 50 220" fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+          <line x1="150" y1="120" x2="150" y2="300" stroke="#64748b" stroke-width="2.5" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+          <path d="M 50 220 Q 50 280 150 300" fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+          <line x1="150" y1="300" x2="150" y2="360" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+          <path d="M 150 360 Q 90 390 70 420" fill="none" stroke="#f43f5e" stroke-width="2.5" marker-end="url(#arrow)"/>
+          <path d="M 150 360 Q 210 390 230 420" fill="none" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+          <!-- Nodes -->
+          <circle cx="150" cy="50" r="18" fill="#d97706"/>
+          <text x="150" y="54" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">SOURCE</text>
+
+          <circle cx="150" cy="120" r="18" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+          <text x="150" y="124" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">SW_SIDING</text>
+
+          <rect x="25" y="202" width="50" height="36" rx="6" fill="#3e2723" stroke="#10b981" stroke-width="2"/>
+          <text x="50" y="224" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">SIDING</text>
+
+          <circle cx="150" cy="300" r="14" fill="#334155"/>
+          <text x="150" y="304" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">MERGE</text>
+
+          <circle cx="150" cy="360" r="18" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+          <text x="150" y="364" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">SW_STATION</text>
+
+          <rect x="40" y="415" width="60" height="28" rx="4" fill="#be123c"/>
+          <text x="70" y="433" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">RED (■)</text>
+
+          <rect x="200" y="415" width="60" height="28" rx="4" fill="#0284c7"/>
+          <text x="230" y="433" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">BLUE (●)</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- COL 2: CONCEPT A MAPPING -->
+    <div class="col-card">
+      <h2>
+        <span>2. Konsept A (Compact Board)</span>
+        <span class="badge badge-a">ORTHO PUZZLE</span>
+      </h2>
+      <div class="diagram-box">
+        <svg width="300" height="460" viewBox="0 0 300 460">
+          <!-- Board perimeter -->
+          <rect x="15" y="15" width="270" height="430" rx="16" fill="#ede6da" stroke="#d4c5b1" stroke-width="3"/>
+
+          <!-- Tracks -->
+          <line x1="150" y1="50" x2="150" y2="120" stroke="#453123" stroke-width="5"/>
+          <path d="M 150 120 Q 75 145 75 210" fill="none" stroke="#453123" stroke-width="5"/>
+          <path d="M 75 210 Q 75 275 150 300" fill="none" stroke="#453123" stroke-width="5"/>
+          <line x1="150" y1="120" x2="150" y2="300" stroke="#453123" stroke-width="5"/>
+          <line x1="150" y1="300" x2="150" y2="355" stroke="#453123" stroke-width="5"/>
+          <path d="M 150 355 Q 85 375 85 410" fill="none" stroke="#453123" stroke-width="5"/>
+          <path d="M 150 355 Q 215 375 215 410" fill="none" stroke="#453123" stroke-width="5"/>
+
+          <!-- Nodes & Elements -->
+          <rect x="120" y="32" width="60" height="26" rx="4" fill="#d97706"/>
+          <text x="150" y="49" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">SOURCE (150,50)</text>
+
+          <circle cx="150" cy="120" r="16" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+          <text x="150" y="124" font-size="8" font-weight="700" fill="#fff" text-anchor="middle">SW (150,120)</text>
+
+          <rect x="45" y="195" width="60" height="30" rx="6" fill="#3e2723" stroke="#10b981" stroke-width="1.5"/>
+          <text x="75" y="213" font-size="8" font-weight="700" fill="#fff" text-anchor="middle">SIDING (75,210)</text>
+
+          <circle cx="150" cy="300" r="10" fill="#334155"/>
+          <text x="150" y="303" font-size="7" font-weight="700" fill="#fff" text-anchor="middle">MERGE</text>
+
+          <circle cx="150" cy="355" r="16" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+          <text x="150" y="359" font-size="8" font-weight="700" fill="#fff" text-anchor="middle">SW (150,355)</text>
+
+          <rect x="55" y="405" width="60" height="26" rx="4" fill="#be123c"/>
+          <text x="85" y="422" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">RED (85,410)</text>
+
+          <rect x="185" y="405" width="60" height="26" rx="4" fill="#0284c7"/>
+          <text x="215" y="422" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">BLUE (215,410)</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- COL 3: CONCEPT B MAPPING -->
+    <div class="col-card">
+      <h2>
+        <span>3. Konsept B (Diagonal Yard)</span>
+        <span class="badge badge-b">DIAGONAL MODEL</span>
+      </h2>
+      <div class="diagram-box">
+        <svg width="300" height="460" viewBox="0 0 300 460">
+          <!-- Board perimeter -->
+          <path d="M 20 40 Q 150 15 270 50 Q 290 200 250 420 Q 150 450 30 380 Z" fill="#ede6da" stroke="#d4c5b1" stroke-width="3"/>
+
+          <!-- Diagonal Tracks -->
+          <line x1="60" y1="60" x2="110" y2="140" stroke="#453123" stroke-width="5"/>
+          <path d="M 110 140 Q 160 90 220 150" fill="none" stroke="#453123" stroke-width="5"/>
+          <path d="M 220 150 Q 250 230 180 300" fill="none" stroke="#453123" stroke-width="5"/>
+          <line x1="110" y1="140" x2="180" y2="300" stroke="#453123" stroke-width="5"/>
+          <line x1="180" y1="300" x2="200" y2="355" stroke="#453123" stroke-width="5"/>
+          <path d="M 200 355 Q 140 375 110 420" fill="none" stroke="#453123" stroke-width="5"/>
+          <path d="M 200 355 Q 235 375 240 415" fill="none" stroke="#453123" stroke-width="5"/>
+
+          <!-- Nodes & Elements -->
+          <rect x="30" y="45" width="60" height="24" rx="4" fill="#d97706"/>
+          <text x="60" y="61" font-size="8" font-weight="700" fill="#fff" text-anchor="middle">SOURCE (60,60)</text>
+
+          <circle cx="110" cy="140" r="15" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+          <text x="110" y="144" font-size="8" font-weight="700" fill="#fff" text-anchor="middle">SW</text>
+
+          <rect x="190" y="135" width="60" height="30" rx="6" fill="#3e2723" stroke="#10b981" stroke-width="1.5"/>
+          <text x="220" y="153" font-size="8" font-weight="700" fill="#fff" text-anchor="middle">SIDING (220,150)</text>
+
+          <circle cx="180" cy="300" r="10" fill="#334155"/>
+          <text x="180" y="303" font-size="7" font-weight="700" fill="#fff" text-anchor="middle">MERGE</text>
+
+          <circle cx="200" cy="355" r="15" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+          <text x="200" y="359" font-size="8" font-weight="700" fill="#fff" text-anchor="middle">SW</text>
+
+          <rect x="80" y="410" width="60" height="26" rx="4" fill="#be123c"/>
+          <text x="110" y="427" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">RED (110,420)</text>
+
+          <rect x="210" y="405" width="60" height="26" rx="4" fill="#0284c7"/>
+          <text x="240" y="422" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">BLUE (240,415)</text>
+        </svg>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- VERIFICATION MATRIX TABLE -->
+  <div style="background: #1e2738; border: 1px solid #334155; border-radius: 16px; padding: 20px;">
+    <h3 style="font-size: 15px; font-weight: 700; color: #f8fafc; margin-bottom: 12px;">Topoloji Bütünlük ve Bağlantı Tablosu</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Kenar / Bağlantı</th>
+          <th>Kaynak Düğüm</th>
+          <th>Hedef Düğüm</th>
+          <th>Makas Durumu</th>
+          <th>Konsept A Karşılığı</th>
+          <th>Konsept B Karşılığı</th>
+          <th>Doğrulama</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>e_src_sw</td>
+          <td>SOURCE</td>
+          <td>SW_SIDING</td>
+          <td>-</td>
+          <td>(177,56) → (177,155)</td>
+          <td>(75,75) → (135,185)</td>
+          <td class="status-pass">✓ EŞLEŞTİ</td>
+        </tr>
+        <tr>
+          <td>e_sw_siding</td>
+          <td>SW_SIDING</td>
+          <td>SIDING_BAY</td>
+          <td>SIDING</td>
+          <td>(177,155) → (85,275)</td>
+          <td>(135,185) → (275,195)</td>
+          <td class="status-pass">✓ EŞLEŞTİ</td>
+        </tr>
+        <tr>
+          <td>e_sw_main</td>
+          <td>SW_SIDING</td>
+          <td>MERGE</td>
+          <td>MAIN</td>
+          <td>(177,155) → (177,395)</td>
+          <td>(135,185) → (215,385)</td>
+          <td class="status-pass">✓ EŞLEŞTİ</td>
+        </tr>
+        <tr>
+          <td>e_siding_merge</td>
+          <td>SIDING_BAY</td>
+          <td>MERGE</td>
+          <td>-</td>
+          <td>(85,275) → (177,395)</td>
+          <td>(275,195) → (215,385)</td>
+          <td class="status-pass">✓ EŞLEŞTİ</td>
+        </tr>
+        <tr>
+          <td>e_merge_sw</td>
+          <td>MERGE</td>
+          <td>SW_STATION</td>
+          <td>-</td>
+          <td>(177,395) → (177,475)</td>
+          <td>(215,385) → (245,465)</td>
+          <td class="status-pass">✓ EŞLEŞTİ</td>
+        </tr>
+        <tr>
+          <td>e_sw_red</td>
+          <td>SW_STATION</td>
+          <td>RED</td>
+          <td>RED</td>
+          <td>(177,475) → (95,570)</td>
+          <td>(245,465) → (135,570)</td>
+          <td class="status-pass">✓ EŞLEŞTİ</td>
+        </tr>
+        <tr>
+          <td>e_sw_blue</td>
+          <td>SW_STATION</td>
+          <td>BLUE</td>
+          <td>BLUE</td>
+          <td>(177,475) → (259,570)</td>
+          <td>(245,465) → (290,560)</td>
+          <td class="status-pass">✓ EŞLEŞTİ</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SWITCH RUSH — Premium Toy Puzzle Tasarım İnceleme & Onay Paneli</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --border: #30363d;
+      --accent: #f59e0b;
+      --accent-blue: #38bdf8;
+      --accent-green: #34d399;
+      --text-main: #f0f6fc;
+      --text-muted: #8b949e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      padding: 32px 24px;
+      line-height: 1.6;
+    }
+
+    header {
+      max-width: 1400px;
+      margin: 0 auto 32px auto;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .badge-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      border: 1px solid transparent;
+    }
+
+    .badge-gold { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border-color: rgba(245, 158, 11, 0.4); }
+    .badge-green { background: rgba(52, 211, 153, 0.15); color: #34d399; border-color: rgba(52, 211, 153, 0.4); }
+    .badge-blue { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border-color: rgba(56, 189, 248, 0.4); }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    h1 span {
+      background: linear-gradient(135deg, #f59e0b, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 36px 0 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #ffffff;
+    }
+
+    /* Comparison Split View */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+
+    .concept-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .concept-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .concept-header h2 {
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .screen-wrapper {
+      background: #000000;
+      border-radius: 36px;
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      margin-bottom: 20px;
+    }
+
+    .screen-img {
+      width: 100%;
+      max-width: 390px;
+      height: auto;
+      border-radius: 32px;
+      display: block;
+      cursor: zoom-in;
+      transition: transform 0.2s ease;
+    }
+
+    .screen-img:hover {
+      transform: scale(1.01);
+    }
+
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 13.5px;
+      color: #c9d1d9;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .feature-list li strong {
+      color: #ffffff;
+      min-width: 130px;
+    }
+
+    /* Full-width Image Panels */
+    .full-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      margin-top: 24px;
+    }
+
+    .full-img {
+      width: 100%;
+      border-radius: 12px;
+      display: block;
+      border: 1px solid var(--border);
+      margin-top: 14px;
+    }
+
+    /* Decision Matrix Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 13.5px;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: #0d1117;
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+
+    td strong { color: #f0f6fc; }
+
+    /* Modal for Full Image Zoom */
+    #zoomModal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    }
+
+    #modalImg {
+      max-height: 94vh;
+      max-width: 94vw;
+      border-radius: 16px;
+      box-shadow: 0 0 50px rgba(0,0,0,0.9);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="badge-bar">
+      <span class="badge badge-gold">Design Approval Gate</span>
+      <span class="badge badge-green">Level 101 Isolated</span>
+      <span class="badge badge-blue">Target: 390×844 Mobile</span>
+    </div>
+    <h1><span>SWITCH RUSH</span> — Premium Toy Puzzle Reset</h1>
+    <p class="subtitle">Art Direction Reset: Railbound okunabilirliği + Mini Motorways sadeliği + Fiziksel ahşap masaüstü bulmaca estetiği.</p>
+  </div>
+  <div style="font-family: 'JetBrains Mono'; font-size: 13px; color: var(--accent-green);">
+    Branch: design/premium-toy-puzzle-101
+  </div>
+</header>
+
+<main>
+
+  <!-- 1. SIDE-BY-SIDE MOBILE COMPOSITIONS -->
+  <div class="section-title">
+    <span>📱 1. Seviye 101 Mobil Ekran Tasarım Karşılaştırması (390×844)</span>
+  </div>
+
+  <div class="compare-grid">
+
+    <!-- CONCEPT A -->
+    <div class="concept-card">
+      <div class="concept-header">
+        <h2>Konsept A — Compact Puzzle Board</h2>
+        <span class="badge badge-gold">Ortho-Grid Tactile</span>
+      </div>
+      <div class="screen-wrapper">
+        <img class="screen-img" src="concepts/concept_a_compact_board_390x844.png" alt="Konsept A Önizleme" onclick="openModal(this.src)">
+      </div>
+      <ul class="feature-list">
+        <li><strong>Oyun Alanı:</strong> Ekranın ortasında sınırları net, bej kumtaşı zeminli, gölgeli kompakt ahşap bulmaca tablası.</li>
+        <li><strong>Görsel Dil:</strong> Railbound tarzı net, dik/kavisli ray geometrisi. Sıfır görsel gürültü.</li>
+        <li><strong>Makas Kontrolü:</strong> Ray ayrımında doğrudan konumlandırılmış 56px pirinç mekanik kadran ve fosforlu yön iğnesi.</li>
+        <li><strong>Park Cebi:</strong> Sol tarafta girintili ahşap yükleme yuvası, güvenlik bariyeri ve 54px yaylı SAL butonu.</li>
+        <li><strong>İstasyonlar:</strong> Kırmızı kiremit çatılı kargo antreposu (■) ve Mavi kemerli modern terminal (●).</li>
+        <li><strong>Avantaj:</strong> Ekran oranına mükemmel oturur, dikey simetri algısı kolaylaştırır, bilişsel yük minimumdur.</li>
+      </ul>
+    </div>
+
+    <!-- CONCEPT B -->
+    <div class="concept-card">
+      <div class="concept-header">
+        <h2>Konsept B — Diagonal Rail Yard</h2>
+        <span class="badge badge-green">Dynamic Angled Yard</span>
+      </div>
+      <div class="screen-wrapper">
+        <img class="screen-img" src="concepts/concept_b_diagonal_yard_390x844.png" alt="Konsept B Önizleme" onclick="openModal(this.src)">
+      </div>
+      <ul class="feature-list">
+        <li><strong>Oyun Alanı:</strong> Sol üstten sağ alta ~30° açıyla akan dinamik çapraz demiryolu garı kompozisyonu.</li>
+        <li><strong>Görsel Dil:</strong> El yapımı tren maketi hissi. Dikey flowchart/akış şeması algısını tamamen yıkar.</li>
+        <li><strong>Makas Kontrolü:</strong> Çapraz hatta entegre 56px pirinç mekanik kadran ve rotaya göre dönen gösterge.</li>
+        <li><strong>Park Cebi:</strong> Sağ üstte yüksek ahşap peron cebi (Spur siding). Ana hattan net kot farkıyla ayrılır.</li>
+        <li><strong>İstasyonlar:</strong> Çapraz hat sonlarında ray hizasında konumlanmış kırmızı depo ve mavi terminal.</li>
+        <li><strong>Avantaj:</strong> Yüksek görsel dinamizm, organik minyatür tren hissi, uzun hatların dengeli yerleşimi.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- 2. MODULAR ASSET DESIGN SHEET -->
+  <div class="section-title">
+    <span>🎨 2. Görsel Asset Tasarım Sistemi (Vektör & Atlas Spesifikasyonu)</span>
+  </div>
+
+  <div class="full-panel">
+    <p style="color: var(--text-muted); font-size: 14px;">
+      İlkel Phaser dikdörtgenleri yerine kullanılan gerçek oyun varlıkları: Chunky oyuncak trenler, çift çelik raylar, mekanik makas kadranları, mimari istasyonlar ve yaylı SAL butonu.
+    </p>
+    <img class="full-img" src="assets/asset_design_sheet.png" alt="Asset Design Sheet" onclick="openModal(this.src)">
+  </div>
+
+  <!-- 3. TOPOLOGY ISOMORPHISM VERIFICATION -->
+  <div class="section-title">
+    <span>📐 3. Matematiksel Topoloji Eşleme ve Bütünlük Doğrulaması</span>
+  </div>
+
+  <div class="full-panel">
+    <p style="color: var(--text-muted); font-size: 14px;">
+      Her iki konsept de Seviye 101'in 7 düğüm ve 7 kenarlı yönlü grafını %100 korur. Raylar farklı bir geometrik kurguda çizilse de mantıksal oyun motoruyla birebir örtüşür.
+    </p>
+    <img class="full-img" src="diagrams/topology_mapping_diagram.png" alt="Topology Mapping Diagram" onclick="openModal(this.src)">
+  </div>
+
+  <!-- 4. COMPARATIVE DECISION MATRIX -->
+  <div class="section-title">
+    <span>⚖️ 4. Konsept Karşılaştırma & Değerlendirme Matrisi</span>
+  </div>
+
+  <div class="full-panel">
+    <table>
+      <thead>
+        <tr>
+          <th>Kriter</th>
+          <th>Konsept A (Compact Puzzle Board)</th>
+          <th>Konsept B (Diagonal Rail Yard)</th>
+          <th>Tasarım Değerlendirmesi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Okunabilirlik (Readability)</strong></td>
+          <td>★★★★★ (Mükemmel)</td>
+          <td>★★★★☆ (Çok İyi)</td>
+          <td>Konsept A'nın ortogonal kurgusu ilk bakışta rotanın ve park cebinin anlaşılmasını maksimuma çıkarır.</td>
+        </tr>
+        <tr>
+          <td><strong>Oyuncak / Minyatür Hissi</strong></td>
+          <td>★★★★☆ (Bulmaca Kutusu)</td>
+          <td>★★★★★ (Minyatür Gar)</td>
+          <td>Konsept B, çapraz yerleşimi sayesinde gerçek bir model tren seti gibi doğal ve dinamik hissettirir.</td>
+        </tr>
+        <tr>
+          <td><strong>Tek Parmak Ergonomisi</strong></td>
+          <td>56px Kadranlar, Doğal Başparmak Alanı</td>
+          <td>56px Kadranlar, Geniş Erişim Alanı</td>
+          <td>Her iki konseptte de makaslar ve SAL butonu Apple HIG / Android 48px dokunma alanını aşar (54-56px).</td>
+        </tr>
+        <tr>
+          <td><strong>Gelecek Seviyelere Uyarlanabilirlik</strong></td>
+          <td>Dual Siding (104) ve FIFO (103-B) için modüler grid</td>
+          <td>Geniş elmas ağlar (105) için doğal rotalar</td>
+          <td>Konsept A modüler tabla genişletmelerine çok uygun; Konsept B serbest hatlara uygundur.</td>
+        </tr>
+        <tr>
+          <td><strong>Flowchart / Şema Riskini Kırma</strong></td>
+          <td>Yüksek (Ahşap tabla ve mimari binalar şemayı kırar)</td>
+          <td>Maksimum (Açılı akış teknik şema hissini tamamen yok eder)</td>
+          <td>Konsept B özellikle dikey akış hissiyatından tamamen kaçınmak isteyen oyuncular için idealdir.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+<!-- Lightbox Modal for Image Zoom -->
+<div id="zoomModal" onclick="this.style.display='none'">
+  <img id="modalImg" src="" alt="Zoomed Asset">
+</div>
+
+<script>
+  function openModal(src) {
+    document.getElementById('modalImg').src = src;
+    document.getElementById('zoomModal').style.display = 'flex';
+  }
+</script>
+
+</body>
+</html>

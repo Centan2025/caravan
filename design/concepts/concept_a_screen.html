@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Konsept A — Compact Puzzle Board (390×844)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@600;700&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #0b0e14;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow: hidden;
+    }
+
+    /* Reference Mobile Device Viewport: 390 x 844 */
+    .mobile-frame {
+      width: 390px;
+      height: 844px;
+      background: radial-gradient(circle at 50% 30%, #202736 0%, #11151e 100%);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.8), 0 0 0 12px #2d3748, 0 0 0 14px #1a202c;
+      border-radius: 48px;
+    }
+
+    /* Ambient Subtle Grid Dots */
+    .grid-bg {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: radial-gradient(rgba(255,255,255,0.06) 1.5px, transparent 1.5px);
+      background-size: 24px 24px;
+      pointer-events: none;
+    }
+
+    /* TOP HUD (Floating Frosted Glass) */
+    .top-hud {
+      position: absolute;
+      top: 24px;
+      left: 18px;
+      right: 18px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 100;
+    }
+
+    .hud-badge-pill {
+      background: rgba(30, 41, 59, 0.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 9999px;
+      height: 48px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    .level-num {
+      background: #f59e0b;
+      color: #0f172a;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 8px;
+      border-radius: 9999px;
+    }
+
+    .level-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: #f8fafc;
+    }
+
+    .next-train-pill {
+      background: #e11d48;
+      color: #ffffff;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(225, 29, 72, 0.4);
+    }
+
+    .hud-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .hud-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(30, 41, 59, 0.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f8fafc;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    /* COMPACT PUZZLE BOARD CONTAINER */
+    .puzzle-board {
+      position: absolute;
+      top: 104px;
+      left: 18px;
+      width: 354px;
+      height: 648px;
+      border-radius: 28px;
+      background: #ede6da;
+      box-shadow: 
+        0 24px 48px -8px rgba(0,0,0,0.6),
+        0 6px 12px rgba(0,0,0,0.25),
+        inset 0 2px 4px rgba(255,255,255,0.7),
+        inset 0 -4px 8px rgba(90,70,50,0.2);
+      border: 4px solid #d4c5b1;
+      overflow: hidden;
+    }
+
+    /* TACTILE SUB-TERRACES */
+    .terrace-wood {
+      position: absolute;
+      background: #e2d9cb;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+
+    /* BOTTOM BAR */
+    .bottom-bar {
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      right: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .hint-pill {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 9999px;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    .hint-pill span.dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #38bdf8;
+      box-shadow: 0 0 10px #38bdf8;
+    }
+  </style>
+</head>
+<body>
+
+<div class="mobile-frame">
+  <div class="grid-bg"></div>
+
+  <!-- TOP MODERN HUD -->
+  <div class="top-hud">
+    <div class="hud-badge-pill">
+      <span class="level-num">101</span>
+      <span class="level-name">Çayır Çıkmazı</span>
+      <div class="next-train-pill">
+        <span>■</span>
+        <span>Sıradaki</span>
+      </div>
+    </div>
+    <div class="hud-actions">
+      <div class="hud-btn" title="Yeniden Başlat">⟲</div>
+      <div class="hud-btn" title="Duraklat">⏸</div>
+    </div>
+  </div>
+
+  <!-- COMPACT PUZZLE BOARD -->
+  <div class="puzzle-board">
+    <!-- SVG SCENE LAYER (Precise Level 101 Topology) -->
+    <svg width="354" height="648" viewBox="0 0 354 648">
+      <defs>
+        <!-- Soft Ambient Drop Shadows -->
+        <filter id="shadowDepth" x="-20%" y="-20%" width="150%" height="150%">
+          <feDropShadow dx="0" dy="8" stdDeviation="5" flood-color="#4a3728" flood-opacity="0.35"/>
+        </filter>
+        <filter id="trainShadow" x="-20%" y="-20%" width="150%" height="150%">
+          <feDropShadow dx="3" dy="10" stdDeviation="5" flood-color="#000000" flood-opacity="0.4"/>
+        </filter>
+        <filter id="glowCyan" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#38bdf8" flood-opacity="0.8"/>
+        </filter>
+        <filter id="plungerShadow" x="-20%" y="-20%" width="150%" height="150%">
+          <feDropShadow dx="0" dy="6" stdDeviation="4" flood-color="#000000" flood-opacity="0.45"/>
+        </filter>
+      </defs>
+
+      <!-- 1. NATURAL BOARD ELEVATION PATCHES -->
+      <path d="M 20 180 Q 90 140 140 210 Q 150 320 80 380 Q 10 360 20 180 Z" fill="#e4dcce" opacity="0.6"/>
+      <path d="M 220 380 Q 330 360 340 480 Q 320 580 240 560 Q 200 480 220 380 Z" fill="#e4dcce" opacity="0.6"/>
+
+      <!-- 2. BALLAST ROADBEDS (All Edges) -->
+      <!-- Source -> Switch Siding -->
+      <path d="M 177 56 L 177 155" fill="none" stroke="#d5c8b5" stroke-width="28" stroke-linecap="round" filter="url(#shadowDepth)"/>
+      <!-- Siding Branch: SW_SIDING (177, 155) -> SIDING_BAY (85, 275) -->
+      <path d="M 177 155 Q 85 190 85 275" fill="none" stroke="#d5c8b5" stroke-width="28" stroke-linecap="round" filter="url(#shadowDepth)"/>
+      <!-- Siding Exit: SIDING_BAY (85, 275) -> MERGE (177, 395) -->
+      <path d="M 85 275 Q 85 360 177 395" fill="none" stroke="#d5c8b5" stroke-width="28" stroke-linecap="round" filter="url(#shadowDepth)"/>
+      <!-- Main Bypass: SW_SIDING (177, 155) -> MERGE (177, 395) -->
+      <path d="M 177 155 L 177 395" fill="none" stroke="#d5c8b5" stroke-width="28" stroke-linecap="round" filter="url(#shadowDepth)"/>
+      <!-- Merge -> SW_STATION (177, 475) -->
+      <path d="M 177 395 L 177 475" fill="none" stroke="#d5c8b5" stroke-width="28" stroke-linecap="round" filter="url(#shadowDepth)"/>
+      <!-- Station Switch -> Red Station (95, 570) -->
+      <path d="M 177 475 Q 95 505 95 570" fill="none" stroke="#d5c8b5" stroke-width="28" stroke-linecap="round" filter="url(#shadowDepth)"/>
+      <!-- Station Switch -> Blue Station (259, 570) -->
+      <path d="M 177 475 Q 259 505 259 570" fill="none" stroke="#d5c8b5" stroke-width="28" stroke-linecap="round" filter="url(#shadowDepth)"/>
+
+      <!-- 3. WOODEN TIES (SLEEPERS) -->
+      <g stroke="#453123" stroke-width="5" stroke-linecap="round">
+        <!-- Source to SW -->
+        <line x1="164" y1="75" x2="190" y2="75"/>
+        <line x1="164" y1="95" x2="190" y2="95"/>
+        <line x1="164" y1="115" x2="190" y2="115"/>
+        <line x1="164" y1="135" x2="190" y2="135"/>
+
+        <!-- Siding Arc In -->
+        <line x1="152" y1="175" x2="176" y2="165"/>
+        <line x1="126" y1="195" x2="148" y2="182"/>
+        <line x1="102" y1="220" x2="120" y2="204"/>
+        <line x1="88" y1="245" x2="104" y2="235"/>
+
+        <!-- Siding Berth -->
+        <line x1="72" y1="265" x2="98" y2="265"/>
+        <line x1="72" y1="285" x2="98" y2="285"/>
+
+        <!-- Siding Arc Out -->
+        <line x1="88" y1="305" x2="104" y2="315"/>
+        <line x1="102" y1="330" x2="120" y2="346"/>
+        <line x1="126" y1="355" x2="148" y2="368"/>
+        <line x1="152" y1="375" x2="176" y2="385"/>
+
+        <!-- Main Line Bypass -->
+        <line x1="164" y1="205" x2="190" y2="205"/>
+        <line x1="164" y1="245" x2="190" y2="245"/>
+        <line x1="164" y1="285" x2="190" y2="285"/>
+        <line x1="164" y1="325" x2="190" y2="325"/>
+        <line x1="164" y1="365" x2="190" y2="365"/>
+
+        <!-- Merge to Station SW -->
+        <line x1="164" y1="415" x2="190" y2="415"/>
+        <line x1="164" y1="435" x2="190" y2="435"/>
+        <line x1="164" y1="455" x2="190" y2="455"/>
+
+        <!-- Station SW to Red -->
+        <line x1="154" y1="492" x2="174" y2="484"/>
+        <line x1="130" y1="512" x2="148" y2="500"/>
+        <line x1="108" y1="535" x2="124" y2="522"/>
+        <line x1="95" y1="558" x2="110" y2="548"/>
+
+        <!-- Station SW to Blue -->
+        <line x1="180" y1="484" x2="200" y2="492"/>
+        <line x1="206" y1="500" x2="224" y2="512"/>
+        <line x1="230" y1="522" x2="246" y2="535"/>
+        <line x1="244" y1="548" x2="259" y2="558"/>
+      </g>
+
+      <!-- 4. POLISHED TWIN STEEL RAILS -->
+      <!-- Source to SW -->
+      <line x1="171" y1="56" x2="171" y2="155" stroke="#94a3b8" stroke-width="2.5"/>
+      <line x1="183" y1="56" x2="183" y2="155" stroke="#94a3b8" stroke-width="2.5"/>
+      <!-- Siding Arc In -->
+      <path d="M 171 155 Q 79 190 79 275" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+      <path d="M 183 155 Q 91 190 91 275" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+      <!-- Siding Arc Out -->
+      <path d="M 79 275 Q 79 360 171 395" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+      <path d="M 91 275 Q 91 360 183 395" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+      <!-- Main Bypass -->
+      <line x1="171" y1="155" x2="171" y2="395" stroke="#94a3b8" stroke-width="2.5"/>
+      <line x1="183" y1="155" x2="183" y2="395" stroke="#94a3b8" stroke-width="2.5"/>
+      <!-- Merge to SW_STATION -->
+      <line x1="171" y1="395" x2="171" y2="475" stroke="#94a3b8" stroke-width="2.5"/>
+      <line x1="183" y1="395" x2="183" y2="475" stroke="#94a3b8" stroke-width="2.5"/>
+      <!-- SW_STATION to Red -->
+      <path d="M 171 475 Q 89 505 89 570" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+      <path d="M 183 475 Q 101 505 101 570" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+      <!-- SW_STATION to Blue -->
+      <path d="M 171 475 Q 253 505 253 570" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+      <path d="M 183 475 Q 265 505 265 570" fill="none" stroke="#94a3b8" stroke-width="2.5"/>
+
+      <!-- ACTIVE LUMINOUS ROUTE HIGHLIGHT (Cyan Glow for Active Path) -->
+      <path d="M 177 155 Q 85 190 85 275" fill="none" stroke="#38bdf8" stroke-width="3" filter="url(#glowCyan)"/>
+
+      <!-- 5. RECESSED SIDING BERTH (Park Cebi) -->
+      <g transform="translate(42, 240)" filter="url(#shadowDepth)">
+        <!-- Recessed timber tray -->
+        <rect x="0" y="0" width="86" height="70" rx="10" fill="#3e2723" stroke="#795548" stroke-width="2"/>
+        <rect x="4" y="4" width="78" height="62" rx="7" fill="#2d1d16"/>
+        <!-- Safety Hazard stripes -->
+        <rect x="6" y="8" width="6" height="54" fill="#eab308"/>
+        <line x1="6" y1="14" x2="12" y2="20" stroke="#000000" stroke-width="2"/>
+        <line x1="6" y1="28" x2="12" y2="34" stroke="#000000" stroke-width="2"/>
+        <line x1="6" y1="42" x2="12" y2="48" stroke="#000000" stroke-width="2"/>
+        <!-- Buffer Stop -->
+        <rect x="14" y="24" width="8" height="22" rx="2" fill="#d97706"/>
+        <!-- Dotted Park Slot -->
+        <rect x="26" y="16" width="50" height="38" rx="6" fill="none" stroke="#10b981" stroke-width="1.8" stroke-dasharray="3 3"/>
+      </g>
+
+      <!-- TACTILE SPRING PLUNGER BUTTON (≥54px Touch Target) -->
+      <g transform="translate(18, 305)" filter="url(#plungerShadow)">
+        <circle cx="20" cy="0" r="26" fill="#047857" stroke="#34d399" stroke-width="2"/>
+        <circle cx="20" cy="-2" r="22" fill="#10b981"/>
+        <polygon points="15,-6 28,0 15,6" fill="#ffffff"/>
+        <text x="20" y="36" font-size="11" font-weight="800" fill="#059669" text-anchor="middle">SAL</text>
+      </g>
+
+      <!-- 6. SOURCE CARGO DEPOT BUILDING (Top) -->
+      <g transform="translate(132, 10)" filter="url(#shadowDepth)">
+        <!-- Platform -->
+        <rect x="0" y="36" width="90" height="12" rx="4" fill="#94a3b8"/>
+        <!-- Depot Brick Body -->
+        <rect x="8" y="6" width="74" height="36" rx="4" fill="#d97706" stroke="#92400e" stroke-width="2"/>
+        <!-- Pitched Roof -->
+        <polygon points="0,8 45,-8 90,8" fill="#b45309"/>
+        <!-- Arch Tunnel Doorway -->
+        <ellipse cx="45" cy="42" rx="14" ry="16" fill="#0f172a"/>
+        <text x="45" y="22" font-size="10" font-weight="800" fill="#ffffff" text-anchor="middle">DEPO</text>
+      </g>
+
+      <!-- 7. TARGET FREIGHT STATIONS (Bottom) -->
+      <!-- RED FREIGHT STATION (Left, 95, 570) -->
+      <g transform="translate(45, 545)" filter="url(#shadowDepth)">
+        <!-- Concrete Dock -->
+        <rect x="0" y="50" width="100" height="14" rx="4" fill="#94a3b8"/>
+        <line x1="0" y1="54" x2="100" y2="54" stroke="#e2e8f0" stroke-width="1.5"/>
+        <!-- Brick Depot -->
+        <rect x="12" y="14" width="76" height="40" rx="4" fill="#fff1f2" stroke="#f43f5e" stroke-width="2"/>
+        <!-- Gabled Terracotta Roof -->
+        <polygon points="4,16 50,-4 96,16" fill="#be123c"/>
+        <polygon points="8,16 50,-1 92,16" fill="#e11d48"/>
+        <!-- Roll-up Cargo Door -->
+        <rect x="20" y="26" width="26" height="28" rx="2" fill="#475569"/>
+        <!-- Prominent Square Emblem -->
+        <rect x="56" y="26" width="22" height="22" rx="4" fill="#e11d48"/>
+        <rect x="61" y="31" width="12" height="12" rx="2" fill="#ffffff"/>
+      </g>
+
+      <!-- BLUE PASSENGER TERMINAL (Right, 259, 570) -->
+      <g transform="translate(209, 545)" filter="url(#shadowDepth)">
+        <!-- Concrete Dock -->
+        <rect x="0" y="50" width="100" height="14" rx="4" fill="#94a3b8"/>
+        <line x1="0" y1="54" x2="100" y2="54" stroke="#e2e8f0" stroke-width="1.5"/>
+        <!-- Modern White Pavilion -->
+        <rect x="12" y="14" width="76" height="40" rx="4" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="2"/>
+        <!-- Vaulted Barrel Dome Roof -->
+        <path d="M 6 16 Q 50 -8 94 16 Z" fill="#0284c7"/>
+        <path d="M 10 16 Q 50 -4 90 16 Z" fill="#38bdf8"/>
+        <!-- Glass Arch Entrance -->
+        <path d="M 22 54 L 22 36 Q 34 26 46 36 L 46 54 Z" fill="#0f172a"/>
+        <!-- Prominent Circle Emblem -->
+        <circle cx="68" cy="37" r="11" fill="#0284c7"/>
+        <circle cx="68" cy="37" r="6" fill="#ffffff"/>
+      </g>
+
+      <!-- 8. MECHANICAL SWITCH DIALS (≥54px Touch Target) -->
+      <!-- SWITCH 1: SW_SIDING at (177, 155) -->
+      <g transform="translate(177, 155)" filter="url(#shadowDepth)">
+        <!-- Outer Brass Bezel (Ø 56px) -->
+        <circle cx="0" cy="0" r="28" fill="#1e293b" stroke="#f59e0b" stroke-width="3"/>
+        <circle cx="0" cy="0" r="22" fill="#0f172a"/>
+        <!-- Luminous Curved Needle points LEFT to Siding -->
+        <path d="M 0 14 Q 0 0 -12 -10" fill="none" stroke="#38bdf8" stroke-width="4.5" stroke-linecap="round"/>
+        <polygon points="-12,-14 -6,-8 -14,-7" fill="#38bdf8"/>
+        <!-- Tactile Mechanical Lever Pin -->
+        <circle cx="-28" cy="0" r="6" fill="#10b981" stroke="#059669" stroke-width="1.5"/>
+      </g>
+
+      <!-- SWITCH 2: SW_STATION at (177, 475) -->
+      <g transform="translate(177, 475)" filter="url(#shadowDepth)">
+        <!-- Outer Brass Bezel (Ø 56px) -->
+        <circle cx="0" cy="0" r="28" fill="#1e293b" stroke="#f59e0b" stroke-width="3"/>
+        <circle cx="0" cy="0" r="22" fill="#0f172a"/>
+        <!-- Luminous Curved Needle points LEFT to RED Station -->
+        <path d="M 0 -14 Q 0 0 -12 10" fill="none" stroke="#f43f5e" stroke-width="4.5" stroke-linecap="round"/>
+        <polygon points="-12,14 -14,7 -6,8" fill="#f43f5e"/>
+        <!-- Tactile Mechanical Lever Pin -->
+        <circle cx="-28" cy="0" r="6" fill="#e11d48" stroke="#9f1239" stroke-width="1.5"/>
+      </g>
+
+      <!-- 9. TOY TRAIN VEHICLE (Red Freight Train approaching SW_SIDING) -->
+      <g transform="translate(177, 105)" filter="url(#trainShadow)">
+        <!-- Underchassis & Wheels -->
+        <rect x="-14" y="-24" width="28" height="48" rx="4" fill="#0f172a"/>
+        <circle cx="-13" cy="-14" r="5" fill="#334155" stroke="#475569" stroke-width="1.5"/>
+        <circle cx="13" cy="-14" r="5" fill="#334155" stroke="#475569" stroke-width="1.5"/>
+        <circle cx="-13" cy="14" r="5" fill="#334155" stroke="#475569" stroke-width="1.5"/>
+        <circle cx="13" cy="14" r="5" fill="#334155" stroke="#475569" stroke-width="1.5"/>
+        <!-- Red Lacquered Wooden Body -->
+        <rect x="-13" y="-25" width="26" height="50" rx="8" fill="#e11d48"/>
+        <!-- Gloss Bevel -->
+        <rect x="-10" y="-23" width="10" height="46" rx="4" fill="#ffffff" opacity="0.3"/>
+        <!-- Cab & Roof Cap -->
+        <rect x="-11" y="-8" width="22" height="28" rx="5" fill="#ffe4e6"/>
+        <!-- Universal Shape Symbol (SQUARE) -->
+        <rect x="-7" y="0" width="14" height="14" rx="3" fill="#e11d48"/>
+        <rect x="-4" y="3" width="8" height="8" rx="1.5" fill="#ffffff"/>
+        <!-- Locomotive Cowcatcher / Headlight -->
+        <ellipse cx="0" cy="24" rx="6" ry="3" fill="#fef08a"/>
+      </g>
+
+    </svg>
+  </div>
+
+  <!-- BOTTOM HINT BAR -->
+  <div class="bottom-bar">
+    <div class="hint-pill">
+      <span class="dot"></span>
+      <span>Makas kadranına dokunarak rotayı ayarla</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
