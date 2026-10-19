@@ -138,6 +138,50 @@ export class MiniRailCityScene extends Phaser.Scene {
     this.createCasualMobileHUD();
 
     this.cameras.main.setBackgroundColor('#261c16');
+
+    // Deterministic inspection bridge for E2E browser tests
+    (window as unknown as { __MINIRAIL_API__?: unknown }).__MINIRAIL_API__ = {
+      getSimulationState: () => ({
+        scenarioId: this.scenario.id,
+        status: this.network.status,
+        tickCount: this.network.tickCount,
+        correctCount: this.network.correctCount,
+        mistakeCount: this.network.mistakeCount,
+        switches: { ...this.network.switches },
+        vehicles: this.network.vehicles.map((v) => ({
+          id: v.id,
+          state: v.state,
+          currentNode: v.currentNode,
+          fromNode: v.fromNode,
+          toNode: v.toNode,
+          progress: v.progress,
+        })),
+        parkedVehicleSlots: Array.from(this.network.vehicles)
+          .filter((v) => v.state === 'PARKED')
+          .map((v) => ({
+            id: v.id,
+            bayId: v.currentNode,
+            slotIndex: this.parkingController.getVehicleSlotIndex(v.id),
+            pos: this.parkingController.getVehiclePosition(v.id),
+          })),
+      }),
+      getButtonCoordinates: () => ({
+        restart: { x: 270, y: 895 },
+        pause: { x: 130, y: 895 },
+        exit: { x: 410, y: 895 },
+        sidingSal: (bayId: string) => {
+          const bay = this.dioramaConfig.sidingBays.find((b) => b.id === bayId);
+          if (!bay) return undefined;
+          const btnX = bay.x > 270 ? -70 : 70;
+          return { x: bay.x + btnX, y: bay.y };
+        },
+        switchLever: (swId: string) => {
+          const sw = this.dioramaConfig.nodes[swId];
+          if (!sw) return undefined;
+          return { x: sw.x, y: sw.y };
+        },
+      }),
+    };
   }
 
   // ===========================================================================
