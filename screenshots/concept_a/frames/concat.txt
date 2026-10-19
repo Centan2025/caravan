@@ -1,0 +1,9 @@
+file 'step0_start.png'
+duration 2.5
+file 'step1_parked.png'
+duration 2.5
+file 'step2_delivered.png'
+duration 2.5
+file 'step3_restart.png'
+duration 2.5
+file 'step3_restart.png'

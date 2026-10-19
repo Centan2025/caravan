@@ -199,47 +199,34 @@ export class MiniRailDioramaRegistry {
   }
 
   // ===========================================================================
-  // LEVEL 101: Countryside Meadow Diorama (Çayır ve Gölet İstasyonu)
-  // Spatial Flow: Elegant S-curve starting top-center, swooping left into siding,
-  // then sweeping back to twin pastoral stations by the pond.
+  // LEVEL 101: Concept A — Compact Puzzle Board (Railbound + Mini Motorways)
+  // Spatial Flow: Centered wooden puzzle board, zero clutter props,
+  // tactile switch dials, recessed siding berth, terracotta & vaulted terminals.
   // ===========================================================================
   public static getLevel101MeadowDiorama(): MiniRailDioramaConfig {
     return {
       levelId: 101,
       topologyId: 'siding_topology_l1',
-      title: 'Çayır & Vadi İstasyonu',
+      title: 'Çayır Çıkmazı',
       theme: {
-        name: 'Pastoral Countryside',
-        subtitle: 'Yumuşak yeşillikler, minyatür gölet ve ahşap çitler',
-        tableColor: 0x8d6e63,        // Warm mahogany toy rim
-        groundColor: 0x88c070,       // Lush warm meadow green
-        groundAccentColor: 0x78ab60, // Meadow hill terrace
-        trackBedColor: 0xdfcbaf,     // Natural ballast gravel
-        railColor: 0x546e7a,         // Vintage dark steel
-        sleeperColor: 0x6d4c41,      // Warm oak wood sleepers
-        props: [
-          // Scenic Pond
-          { type: 'water_pond', x: 420, y: 360, size: 75 },
-          // Miniature Trees
-          { type: 'tree_round', x: 70, y: 220, size: 22 },
-          { type: 'tree_round', x: 460, y: 200, size: 26 },
-          { type: 'tree_pine', x: 60, y: 440, size: 24 },
-          { type: 'tree_round', x: 80, y: 620, size: 20 },
-          { type: 'tree_pine', x: 470, y: 640, size: 24 },
-          // Wooden fence along meadow
-          { type: 'fence', x: 420, y: 260, size: 70, rotation: 0 },
-          { type: 'flower_patch', x: 100, y: 720, size: 16 },
-          { type: 'flower_patch', x: 450, y: 720, size: 16 },
-        ],
+        name: 'Compact Puzzle Board',
+        subtitle: 'Sıcak açık bej zemin, kalın çerçeve, minimalist bulmaca',
+        tableColor: 0xd4c5b1,        // Warm beige rim
+        groundColor: 0xede6da,       // Warm light sandstone board ground
+        groundAccentColor: 0xe4dcce, // Elevation terrace patch
+        trackBedColor: 0xd5c8b5,     // Ballast roadbed
+        railColor: 0x94a3b8,         // Metallic polished steel
+        sleeperColor: 0x453123,      // Dark walnut wood ties
+        props: [],                   // Zero noisy props: no trees, ponds, fences, rocks!
       },
       nodes: {
-        SOURCE: { id: 'SOURCE', x: 270, y: 110, label: 'Kargo Hangarı', type: 'SOURCE' },
-        SW_SIDING: { id: 'SW_SIDING', x: 270, y: 230, label: 'Giriş Makası', type: 'SWITCH' },
-        SIDING_BAY: { id: 'SIDING_BAY', x: 130, y: 380, label: 'Sol Park Cebi', type: 'SIDING', capacity: 1 },
-        MERGE: { id: 'MERGE', x: 270, y: 530, label: 'Birleşme', type: 'WAYPOINT' },
-        SW_STATION: { id: 'SW_STATION', x: 270, y: 640, label: 'İstasyon Makası', type: 'SWITCH' },
-        RED: { id: 'RED', x: 160, y: 750, label: 'Kırmızı Gar', type: 'STATION', stationColor: 'RED' },
-        BLUE: { id: 'BLUE', x: 380, y: 750, label: 'Mavi Gar', type: 'STATION', stationColor: 'BLUE' },
+        SOURCE: { id: 'SOURCE', x: 270, y: 165, label: 'Kargo Deposu', type: 'SOURCE' },
+        SW_SIDING: { id: 'SW_SIDING', x: 270, y: 285, label: 'Giriş Makası', type: 'SWITCH' },
+        SIDING_BAY: { id: 'SIDING_BAY', x: 135, y: 440, label: 'Sol Park Cebi', type: 'SIDING', capacity: 1 },
+        MERGE: { id: 'MERGE', x: 270, y: 585, label: 'Birleşme', type: 'WAYPOINT' },
+        SW_STATION: { id: 'SW_STATION', x: 270, y: 685, label: 'İstasyon Makası', type: 'SWITCH' },
+        RED: { id: 'RED', x: 155, y: 805, label: 'Kırmızı Antrepo', type: 'STATION', stationColor: 'RED' },
+        BLUE: { id: 'BLUE', x: 385, y: 805, label: 'Mavi Terminal', type: 'STATION', stationColor: 'BLUE' },
       },
       edges: [
         {
@@ -247,8 +234,8 @@ export class MiniRailDioramaRegistry {
           from: 'SOURCE',
           to: 'SW_SIDING',
           points: [
-            { x: 270, y: 110 },
-            { x: 270, y: 230 },
+            { x: 270, y: 165 },
+            { x: 270, y: 285 },
           ],
         },
         {
@@ -257,8 +244,8 @@ export class MiniRailDioramaRegistry {
           to: 'MERGE',
           branch: 'MAIN',
           points: [
-            { x: 270, y: 230 },
-            { x: 270, y: 530 },
+            { x: 270, y: 285 },
+            { x: 270, y: 585 },
           ],
         },
         {
@@ -267,9 +254,9 @@ export class MiniRailDioramaRegistry {
           to: 'SIDING_BAY',
           branch: 'SIDING',
           points: [
-            { x: 270, y: 230 },
-            { x: 190, y: 280 },
-            { x: 130, y: 380 },
+            { x: 270, y: 285 },
+            { x: 195, y: 335 },
+            { x: 135, y: 440 },
           ],
         },
         {
@@ -277,9 +264,9 @@ export class MiniRailDioramaRegistry {
           from: 'SIDING_BAY',
           to: 'MERGE',
           points: [
-            { x: 130, y: 380 },
-            { x: 180, y: 480 },
-            { x: 270, y: 530 },
+            { x: 135, y: 440 },
+            { x: 195, y: 535 },
+            { x: 270, y: 585 },
           ],
         },
         {
@@ -287,8 +274,8 @@ export class MiniRailDioramaRegistry {
           from: 'MERGE',
           to: 'SW_STATION',
           points: [
-            { x: 270, y: 530 },
-            { x: 270, y: 640 },
+            { x: 270, y: 585 },
+            { x: 270, y: 685 },
           ],
         },
         {
@@ -297,9 +284,9 @@ export class MiniRailDioramaRegistry {
           to: 'RED',
           branch: 'RED',
           points: [
-            { x: 270, y: 640 },
-            { x: 200, y: 690 },
-            { x: 160, y: 750 },
+            { x: 270, y: 685 },
+            { x: 200, y: 735 },
+            { x: 155, y: 805 },
           ],
         },
         {
@@ -308,26 +295,26 @@ export class MiniRailDioramaRegistry {
           to: 'BLUE',
           branch: 'BLUE',
           points: [
-            { x: 270, y: 640 },
-            { x: 340, y: 690 },
-            { x: 380, y: 750 },
+            { x: 270, y: 685 },
+            { x: 340, y: 735 },
+            { x: 385, y: 805 },
           ],
         },
       ],
       stationDetails: {
-        RED: { x: 160, y: 750, width: 110, height: 60, roofColor: 0xd9534f, label: 'Kırmızı Gar' },
-        BLUE: { x: 380, y: 750, width: 110, height: 60, roofColor: 0x337ab7, label: 'Mavi Gar' },
+        RED: { x: 155, y: 805, width: 125, height: 65, roofColor: 0xe11d48, label: 'Kırmızı Antrepo' },
+        BLUE: { x: 385, y: 805, width: 125, height: 65, roofColor: 0x0284c7, label: 'Mavi Terminal' },
       },
       sidingBays: [
         {
           id: 'SIDING_BAY',
-          label: 'Park Peronu',
-          x: 130,
-          y: 380,
-          width: 90,
-          height: 70,
+          label: 'Park Yuvası',
+          x: 135,
+          y: 440,
+          width: 120,
+          height: 75,
           capacity: 1,
-          slots: [{ x: 130, y: 380 }],
+          slots: [{ x: 135, y: 440 }],
         },
       ],
     };
