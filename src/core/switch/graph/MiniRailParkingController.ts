@@ -63,8 +63,9 @@ export class MiniRailParkingController {
     }
 
     if (slotIndex >= bay.capacity) {
-      // Fallback if over capacity: clamp to last slot
-      slotIndex = Math.max(0, bay.capacity - 1);
+      throw new Error(
+        `[MiniRailParkingController] Siding bay '${bayId}' capacity exceeded (capacity: ${bay.capacity}). Cannot park vehicle ${vehicleId}.`
+      );
     }
 
     const slotPos = bay.slots[slotIndex] ?? bay.slots[0] ?? { x: bay.x, y: bay.y };
@@ -88,14 +89,38 @@ export class MiniRailParkingController {
   }
 
   /**
+   * Checks if a vehicle is currently eligible for release from the siding.
+   * Logical rule: Vehicle must be at the lead slot (slotIndex === 0) and not currently mid-advance.
+   */
+  public canReleaseVehicle(vehicleId: number): boolean {
+    const state = this.vehicleSlots.get(vehicleId);
+    if (!state) return false;
+    if (state.isAdvancing) return false;
+    if (state.slotIndex !== 0) return false;
+    return true;
+  }
+
+  /**
    * Called when a vehicle leaves parking and transitions to MOVING.
    * Returns the exact coordinate the vehicle was visually at when departing.
    * Promotes upstream parked vehicles in the FIFO queue to smoothly advance forward.
+   * Throws an error if release is attempted while advancing or not at lead slot.
    */
   public releaseVehicle(vehicleId: number): DioramaPoint | undefined {
     const state = this.vehicleSlots.get(vehicleId);
     if (!state) {
       return this.departureOrigins.get(vehicleId);
+    }
+
+    if (state.isAdvancing) {
+      throw new Error(
+        `[MiniRailParkingController] Vehicle ${vehicleId} cannot depart while advancing between slots (${Math.round(state.advanceProgress * 100)}% complete).`
+      );
+    }
+    if (state.slotIndex !== 0) {
+      throw new Error(
+        `[MiniRailParkingController] Vehicle ${vehicleId} is at non-lead slot ${state.slotIndex}. In FIFO siding, only the lead vehicle (slot 0) can depart.`
+      );
     }
 
     const departureOrigin: DioramaPoint = {

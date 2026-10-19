@@ -116,15 +116,15 @@ export class MiniRailCityScene extends Phaser.Scene {
     this.tickAccumulatorMs = 0;
     this.perfStats = { creationsCount: 0, destructionsCount: 0, frameUpdatesCount: 0 };
 
-    // Display Layers
-    this.bgGraphics = this.add.graphics();
-    this.trackBedGraphics = this.add.graphics();
-    this.sleepersGraphics = this.add.graphics();
-    this.railsGraphics = this.add.graphics();
-    this.switchPointsGraphics = this.add.graphics();
-    this.propsContainer = this.add.container(0, 0);
-    this.trainsContainer = this.add.container(0, 0);
-    this.hudContainer = this.add.container(0, 0);
+    // Display Layers with explicit z-ordering
+    this.bgGraphics = this.add.graphics().setDepth(1);
+    this.propsContainer = this.add.container(0, 0).setDepth(2);
+    this.trackBedGraphics = this.add.graphics().setDepth(3);
+    this.sleepersGraphics = this.add.graphics().setDepth(4);
+    this.railsGraphics = this.add.graphics().setDepth(5);
+    this.switchPointsGraphics = this.add.graphics().setDepth(6);
+    this.trainsContainer = this.add.container(0, 0).setDepth(20);
+    this.hudContainer = this.add.container(0, 0).setDepth(100);
 
     // Diorama Board & Scenery
     this.renderDioramaBase();
@@ -524,7 +524,7 @@ export class MiniRailCityScene extends Phaser.Scene {
   // ===========================================================================
   private renderSidingPlatforms(): void {
     for (const bay of this.dioramaConfig.sidingBays) {
-      const container = this.add.container(bay.x, bay.y);
+      const container = this.add.container(bay.x, bay.y).setDepth(7);
 
       const shadow = this.add.rectangle(3, 4, bay.width, bay.height, 0x000000, 0.22);
       const deck = this.add.rectangle(0, 0, bay.width, bay.height, 0xd7ccc8);
@@ -578,6 +578,15 @@ export class MiniRailCityScene extends Phaser.Scene {
 
   private handleSidingRelease(sidingId: string, btnContainer: Phaser.GameObjects.Container): void {
     if (this.isSimulationPaused) return;
+
+    // Reject premature release if parked vehicle is currently advancing between slots
+    const parked = this.network.vehicles.filter(
+      (v) => v.state === 'PARKED' && v.currentNode === sidingId
+    );
+    if (parked.length > 0 && !this.parkingController.canReleaseVehicle(parked[0].id)) {
+      this.sounds.playFail();
+      return;
+    }
 
     const ok = this.network.releaseSiding(sidingId);
     if (ok) {

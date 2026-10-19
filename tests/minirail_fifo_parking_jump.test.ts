@@ -88,27 +88,36 @@ describe('Mini Rail City — FIFO Siding Visual Jump & Departure Consistency', (
     expect(v1JumpDistance).toBe(0.0);
   });
 
-  it('verifies early release of second vehicle before advance completes has zero jump', () => {
+  it('rejects early release of second vehicle before advance completes and allows at 400ms with zero jump', () => {
     const controller = new MiniRailParkingController(config.sidingBays, { advanceDurationMs: 400 });
 
     controller.parkVehicle(10, bay.id);
     controller.parkVehicle(11, bay.id);
 
-    // Release vehicle 10
+    // Release vehicle 10 (lead)
     controller.releaseVehicle(10);
 
     // Advance vehicle 11 only 100ms (25% progress)
     controller.update(100);
-    const car11CurrentPos = controller.getVehiclePosition(11)!;
+    expect(controller.canReleaseVehicle(11)).toBe(false);
 
-    // Release vehicle 11 mid-advance
+    // Premature release MUST be rejected
+    expect(() => controller.releaseVehicle(11)).toThrowError(
+      /cannot depart while advancing between slots/
+    );
+
+    // Advance vehicle 11 remaining 300ms to complete slot transition
+    controller.update(300);
+    expect(controller.canReleaseVehicle(11)).toBe(true);
+
+    const car11FinalPos = controller.getVehiclePosition(11)!;
     const departureOrigin = controller.releaseVehicle(11)!;
 
     const jump = Math.hypot(
-      departureOrigin.x - car11CurrentPos.x,
-      departureOrigin.y - car11CurrentPos.y
+      departureOrigin.x - car11FinalPos.x,
+      departureOrigin.y - car11FinalPos.y
     );
-    expect(jump).toBe(0.0); // Exact smooth departure from wherever it visually was!
+    expect(jump).toBe(0.0); // Exact smooth departure
   });
 
   it('verifies departure trajectory sampling from slot 1 is geometrically continuous to merge point', () => {
