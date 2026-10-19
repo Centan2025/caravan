@@ -16,6 +16,7 @@ import {
   MiniRailDioramaConfig,
   DioramaPoint,
 } from '../core/switch/graph/MiniRailDioramaLayouts';
+import { MiniRailParkingController } from '../core/switch/graph/MiniRailParkingController';
 import { TrackGeometry } from '../core/switch/graph/TrackGeometry';
 import { SoundEffects } from '../audio/SoundEffects';
 
@@ -48,6 +49,8 @@ export class MiniRailCityScene extends Phaser.Scene {
 
   // P1 Performance: Persistent vehicle view containers (ID -> Container)
   private vehicleContainers: Map<number, Phaser.GameObjects.Container> = new Map();
+  // FIFO & Siding parking visual controller (zero visual jump)
+  public parkingController!: MiniRailParkingController;
 
   // Performance telemetry
   public perfStats: PerformanceStats = {
@@ -97,6 +100,8 @@ export class MiniRailCityScene extends Phaser.Scene {
     const topoDef = (this.scenario.topology as GraphTopologyDef) || SIDING_LEVEL_101.topology;
     this.network = new GraphSwitchNetwork(this.scenario, new GraphTopology(topoDef));
     this.network.start();
+
+    this.parkingController = new MiniRailParkingController(this.dioramaConfig.sidingBays);
 
     // Clear persistent mappings
     for (const cont of this.vehicleContainers.values()) {
@@ -734,6 +739,8 @@ export class MiniRailCityScene extends Phaser.Scene {
   public override update(_time: number, delta: number): void {
     if (this.isSimulationPaused || this.network.status !== 'RUNNING') return;
 
+    this.parkingController.update(delta);
+
     const tickMs = this.scenario.tickDurationMs || 1000;
     this.tickAccumulatorMs += delta;
 
@@ -801,6 +808,7 @@ export class MiniRailCityScene extends Phaser.Scene {
       if (!activeIds.has(id)) {
         container.destroy();
         this.vehicleContainers.delete(id);
+        this.parkingController.clearDepartureOrigin(id);
         this.perfStats.destructionsCount++;
       }
     }
@@ -820,16 +828,12 @@ export class MiniRailCityScene extends Phaser.Scene {
       let angle = Math.PI / 2;
 
       if (v.state === 'PARKED') {
-        // P0: Exact physical parking slot allocation (supports 2-capacity FIFO)
+        // P0: Exact physical parking slot allocation via MiniRailParkingController
         const bay = this.dioramaConfig.sidingBays.find((b) => b.id === v.currentNode);
         if (bay) {
-          const parkedAtBay = activeVehicles.filter(
-            (veh) => veh.state === 'PARKED' && veh.currentNode === bay.id
-          );
-          const slotIdx = Math.max(0, parkedAtBay.indexOf(v));
-          const slot = bay.slots[slotIdx] ?? bay.slots[0];
-          posX = slot.x;
-          posY = slot.y;
+          const slotState = this.parkingController.parkVehicle(v.id, bay.id);
+          posX = slotState.currentX;
+          posY = slotState.currentY;
           angle = Math.PI / 2;
         } else {
           const node = this.dioramaConfig.nodes[v.currentNode];
@@ -837,10 +841,16 @@ export class MiniRailCityScene extends Phaser.Scene {
           posY = node?.y ?? 380;
         }
       } else if (v.state === 'MOVING') {
-        // P0: Trajectory smoothly departs from actual siding slot if leaving parking
+        // P0: Trajectory smoothly departs from actual siding slot/position if leaving parking
+        let originOverride: DioramaPoint | undefined = undefined;
         const bay = this.dioramaConfig.sidingBays.find((b) => b.id === v.fromNode);
-        const originSlot = bay ? bay.slots[0] : undefined;
-        const pathPoints = this.findPathWaypoints(v.fromNode || v.currentNode, v.toNode || v.currentNode, originSlot);
+        if (bay) {
+          originOverride =
+            this.parkingController.releaseVehicle(v.id) ??
+            this.parkingController.getDepartureOrigin(v.id) ??
+            bay.slots[0];
+        }
+        const pathPoints = this.findPathWaypoints(v.fromNode || v.currentNode, v.toNode || v.currentNode, originOverride);
 
         const transform = TrackGeometry.getVehicleTransform(pathPoints, interpProgress);
         posX = transform.x;
@@ -848,6 +858,7 @@ export class MiniRailCityScene extends Phaser.Scene {
         angle = transform.angle;
       } else {
         // SPAWNED or WAITING at node
+        this.parkingController.clearDepartureOrigin(v.id);
         const node = this.dioramaConfig.nodes[v.currentNode];
         posX = node?.x ?? 270;
         posY = node?.y ?? 100;

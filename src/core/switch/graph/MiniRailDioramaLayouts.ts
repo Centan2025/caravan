@@ -44,6 +44,17 @@ export interface DioramaTheme {
   props: DioramaProp[];
 }
 
+export interface MiniRailSidingBay {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  capacity: number;
+  slots: DioramaPoint[];
+}
+
 export interface MiniRailDioramaConfig {
   levelId: number;
   topologyId: string;
@@ -55,16 +66,7 @@ export interface MiniRailDioramaConfig {
     RED: { x: number; y: number; width: number; height: number; roofColor: number; label: string };
     BLUE: { x: number; y: number; width: number; height: number; roofColor: number; label: string };
   };
-  sidingBays: Array<{
-    id: string;
-    label: string;
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    capacity: number;
-    slots: DioramaPoint[];
-  }>;
+  sidingBays: MiniRailSidingBay[];
 }
 
 export class MiniRailDioramaRegistry {
