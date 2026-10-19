@@ -16,7 +16,14 @@ import {
   MiniRailDioramaConfig,
   DioramaPoint,
 } from '../core/switch/graph/MiniRailDioramaLayouts';
+import { TrackGeometry } from '../core/switch/graph/TrackGeometry';
 import { SoundEffects } from '../audio/SoundEffects';
+
+export interface PerformanceStats {
+  creationsCount: number;
+  destructionsCount: number;
+  frameUpdatesCount: number;
+}
 
 export class MiniRailCityScene extends Phaser.Scene {
   private network!: GraphSwitchNetwork;
@@ -38,6 +45,16 @@ export class MiniRailCityScene extends Phaser.Scene {
   // Interactive Switch Controls
   private switchControls: Map<string, Phaser.GameObjects.Container> = new Map();
   private sidingReleaseButtons: Map<string, Phaser.GameObjects.Container> = new Map();
+
+  // P1 Performance: Persistent vehicle view containers (ID -> Container)
+  private vehicleContainers: Map<number, Phaser.GameObjects.Container> = new Map();
+
+  // Performance telemetry
+  public perfStats: PerformanceStats = {
+    creationsCount: 0,
+    destructionsCount: 0,
+    frameUpdatesCount: 0,
+  };
 
   // Tick & Run state
   private isSimulationPaused: boolean = false;
@@ -81,11 +98,18 @@ export class MiniRailCityScene extends Phaser.Scene {
     this.network = new GraphSwitchNetwork(this.scenario, new GraphTopology(topoDef));
     this.network.start();
 
+    // Clear persistent mappings
+    for (const cont of this.vehicleContainers.values()) {
+      cont.destroy();
+    }
+    this.vehicleContainers.clear();
     this.switchControls.clear();
     this.sidingReleaseButtons.clear();
+
     this.lastDeliveryCount = 0;
     this.lastMistakeCount = 0;
     this.tickAccumulatorMs = 0;
+    this.perfStats = { creationsCount: 0, destructionsCount: 0, frameUpdatesCount: 0 };
 
     // Display Layers
     this.bgGraphics = this.add.graphics();
@@ -286,84 +310,66 @@ export class MiniRailCityScene extends Phaser.Scene {
   }
 
   // ===========================================================================
-  // PHYSICAL TOY RAILWAY TRACKS (Ballast, Sleepers, Twin Rails)
+  // PHYSICAL TOY RAILWAY TRACKS (P0 — Unified TrackGeometry)
   // ===========================================================================
   private renderTracks(): void {
     const t = this.dioramaConfig.theme;
 
-    // 1. Ballast Roadbed
+    // 1. Ballast Roadbed (Sampled smooth curve)
     this.trackBedGraphics.clear();
     this.trackBedGraphics.lineStyle(22, t.trackBedColor, 1.0);
 
     for (const edge of this.dioramaConfig.edges) {
-      const pts = edge.points;
-      if (pts.length < 2) continue;
+      const samples = TrackGeometry.sampleCurve(edge.points, 35);
+      if (samples.length < 2) continue;
 
       this.trackBedGraphics.beginPath();
-      this.trackBedGraphics.moveTo(pts[0].x, pts[0].y);
-      if (pts.length === 2) {
-        this.trackBedGraphics.lineTo(pts[1].x, pts[1].y);
-      } else if (pts.length === 3) {
-        this.trackBedGraphics.lineTo(pts[1].x, pts[1].y);
-        this.trackBedGraphics.lineTo(pts[2].x, pts[2].y);
+      this.trackBedGraphics.moveTo(samples[0].x, samples[0].y);
+      for (let i = 1; i < samples.length; i++) {
+        this.trackBedGraphics.lineTo(samples[i].x, samples[i].y);
       }
       this.trackBedGraphics.strokePath();
     }
 
-    // 2. Wooden Sleepers
+    // 2. Wooden Sleepers (Uniform spacing along arc length & perpendicular orientation)
     this.sleepersGraphics.clear();
     this.sleepersGraphics.lineStyle(5, t.sleeperColor, 0.95);
 
     for (const edge of this.dioramaConfig.edges) {
-      const pts = edge.points;
-      for (let i = 0; i < pts.length - 1; i++) {
-        const p1 = pts[i];
-        const p2 = pts[i + 1];
-        const dist = Phaser.Math.Distance.Between(p1.x, p1.y, p2.x, p2.y);
-        const steps = Math.floor(dist / 16);
-        const angle = Phaser.Math.Angle.Between(p1.x, p1.y, p2.x, p2.y);
-        const perpAngle = angle + Math.PI / 2;
-
-        for (let s = 1; s <= steps; s++) {
-          const u = s / (steps + 1);
-          const cx = Phaser.Math.Linear(p1.x, p2.x, u);
-          const cy = Phaser.Math.Linear(p1.y, p2.y, u);
-
-          const hx = Math.cos(perpAngle) * 9.5;
-          const hy = Math.sin(perpAngle) * 9.5;
-
-          this.sleepersGraphics.lineBetween(cx - hx, cy - hy, cx + hx, cy + hy);
-        }
+      const sleepers = TrackGeometry.computeSleeperPositions(edge.points, 16, 20);
+      for (const s of sleepers) {
+        this.sleepersGraphics.lineBetween(s.x1, s.y1, s.x2, s.y2);
       }
     }
 
-    // 3. Twin Steel Rails
+    // 3. Twin Steel Rails (Strictly equidistant from centerline)
     this.railsGraphics.clear();
     this.railsGraphics.lineStyle(2.5, t.railColor, 0.95);
 
-    const railOffset = 6.0;
-
     for (const edge of this.dioramaConfig.edges) {
-      const pts = edge.points;
-      for (let i = 0; i < pts.length - 1; i++) {
-        const p1 = pts[i];
-        const p2 = pts[i + 1];
-        const angle = Phaser.Math.Angle.Between(p1.x, p1.y, p2.x, p2.y);
-        const perpAngle = angle + Math.PI / 2;
+      const { leftRail, rightRail } = TrackGeometry.computeTwinRailPaths(edge.points, 12, 35);
+      if (leftRail.length < 2) continue;
 
-        const ox = Math.cos(perpAngle) * railOffset;
-        const oy = Math.sin(perpAngle) * railOffset;
-
-        this.railsGraphics.lineBetween(p1.x - ox, p1.y - oy, p2.x - ox, p2.y - oy);
-        this.railsGraphics.lineBetween(p1.x + ox, p1.y + oy, p2.x + ox, p2.y + oy);
+      this.railsGraphics.beginPath();
+      this.railsGraphics.moveTo(leftRail[0].x, leftRail[0].y);
+      for (let i = 1; i < leftRail.length; i++) {
+        this.railsGraphics.lineTo(leftRail[i].x, leftRail[i].y);
       }
+      this.railsGraphics.strokePath();
+
+      this.railsGraphics.beginPath();
+      this.railsGraphics.moveTo(rightRail[0].x, rightRail[0].y);
+      for (let i = 1; i < rightRail.length; i++) {
+        this.railsGraphics.lineTo(rightRail[i].x, rightRail[i].y);
+      }
+      this.railsGraphics.strokePath();
     }
 
     this.updateActiveSwitchFrogPreviews();
   }
 
   // ===========================================================================
-  // PHYSICAL SWITCH STANDS & TACTILE LEVERS (Faz 2 & 4)
+  // PHYSICAL SWITCH STANDS & TACTILE LEVERS (Faz 2 & 4, >=48px Touch Target)
   // ===========================================================================
   private renderSwitchStands(): void {
     const swNodes = Object.values(this.dioramaConfig.nodes).filter((n) => n.type === 'SWITCH');
@@ -371,6 +377,7 @@ export class MiniRailCityScene extends Phaser.Scene {
     for (const sw of swNodes) {
       const container = this.add.container(sw.x, sw.y);
 
+      // 64x64 px Touch Target Area (Radius 32)
       const touchHitArea = this.add.circle(0, 0, 32, 0xffffff, 0.001);
       touchHitArea.setInteractive({ useHandCursor: true });
 
@@ -496,15 +503,19 @@ export class MiniRailCityScene extends Phaser.Scene {
       );
 
       if (activeEdge && activeEdge.points.length >= 2) {
-        const p1 = activeEdge.points[0];
-        const p2 = activeEdge.points[1];
-        this.switchPointsGraphics.lineBetween(p1.x, p1.y, p2.x, p2.y);
+        const samples = TrackGeometry.sampleCurve(activeEdge.points, 25);
+        this.switchPointsGraphics.beginPath();
+        this.switchPointsGraphics.moveTo(samples[0].x, samples[0].y);
+        for (let i = 1; i < samples.length; i++) {
+          this.switchPointsGraphics.lineTo(samples[i].x, samples[i].y);
+        }
+        this.switchPointsGraphics.strokePath();
       }
     }
   }
 
   // ===========================================================================
-  // SIDING PLATFORMS & TACTILE SAL RELEASE (Faz 2 & 4)
+  // SIDING PLATFORMS & TACTILE SAL RELEASE (>=48px Touch Target)
   // ===========================================================================
   private renderSidingPlatforms(): void {
     for (const bay of this.dioramaConfig.sidingBays) {
@@ -531,12 +542,12 @@ export class MiniRailCityScene extends Phaser.Scene {
         stallGraphics.strokeRoundedRect(-24, relY - 14, 48, 28, 6);
       }
 
-      // Tactile "SAL / DEVAM ET" Release Button
+      // Tactile "SAL / DEVAM ET" Release Button (104x48px >= 48px touch target)
       const btnX = bay.x > 270 ? -70 : 70;
       const salBtnContainer = this.add.container(btnX, 0);
 
-      const salShadow = this.add.rectangle(2, 3, 100, 42, 0x000000, 0.25);
-      const salBg = this.add.rectangle(0, 0, 100, 42, 0x10b981);
+      const salShadow = this.add.rectangle(2, 3, 104, 48, 0x000000, 0.25);
+      const salBg = this.add.rectangle(0, 0, 104, 48, 0x10b981);
       salBg.setStrokeStyle(2, 0x047857);
       salBg.setInteractive({ useHandCursor: true });
 
@@ -647,13 +658,13 @@ export class MiniRailCityScene extends Phaser.Scene {
       .setOrigin(0.5);
     statusBox.add([statusBg, this.statusBannerText]);
 
-    // 3. Bottom Controls Row
+    // 3. Bottom Controls Row (>=48px touch targets)
     const btnRow = this.add.container(270, 895);
 
     const makeBtn = (x: number, label: string, color: number, cb: () => void) => {
       const bCont = this.add.container(x, 0);
-      const bShadow = this.add.rectangle(2, 3, 120, 42, 0x000000, 0.2);
-      const bBg = this.add.rectangle(0, 0, 120, 42, color);
+      const bShadow = this.add.rectangle(2, 3, 120, 48, 0x000000, 0.2);
+      const bBg = this.add.rectangle(0, 0, 120, 48, color);
       bBg.setStrokeStyle(2, 0xffffff);
       bBg.setInteractive({ useHandCursor: true });
       const bTxt = this.add
@@ -718,7 +729,7 @@ export class MiniRailCityScene extends Phaser.Scene {
   }
 
   // ===========================================================================
-  // SIMULATION TICK LOOP & TRAIN ANIMATION (Faz 2 & 4)
+  // SIMULATION TICK LOOP (Deterministic 4-Phase Simulation)
   // ===========================================================================
   public override update(_time: number, delta: number): void {
     if (this.isSimulationPaused || this.network.status !== 'RUNNING') return;
@@ -777,92 +788,118 @@ export class MiniRailCityScene extends Phaser.Scene {
   }
 
   // ===========================================================================
-  // 2.5D MINIATURE TOY TRAIN CARRIAGE RENDERING (Faz 4)
+  // P0 & P1: PERSISTENT 2.5D TRAIN VEHICLE RENDERING & EXACT PARKING SLOTS
   // ===========================================================================
   private renderVisualTrains(interpProgress: number): void {
-    this.trainsContainer.removeAll(true);
-
     const activeVehicles = this.network.vehicles.filter(
       (v) => v.state !== 'DELIVERED' && v.state !== 'MISDELIVERED'
     );
+    const activeIds = new Set(activeVehicles.map((v) => v.id));
 
+    // 1. Destroy view containers for vehicles that delivered or despawned
+    for (const [id, container] of this.vehicleContainers.entries()) {
+      if (!activeIds.has(id)) {
+        container.destroy();
+        this.vehicleContainers.delete(id);
+        this.perfStats.destructionsCount++;
+      }
+    }
+
+    // 2. Update or instantiate persistent container for each active vehicle
     for (const v of activeVehicles) {
-      const fromNodeId = v.currentNode;
-      const toNodeId = v.toNode || v.currentNode;
-      const pathPoints = this.findPathWaypoints(fromNodeId, toNodeId);
+      let trainBox = this.vehicleContainers.get(v.id);
+      if (!trainBox) {
+        trainBox = this.createVehicleContainer(v.color);
+        this.trainsContainer.add(trainBox);
+        this.vehicleContainers.set(v.id, trainBox);
+        this.perfStats.creationsCount++;
+      }
 
-      const t = v.state === 'PARKED' ? 0.5 : interpProgress;
-      const pos = this.interpolatePosition(pathPoints, t);
-      const angle = this.calculateTrainAngle(pathPoints, t);
+      let posX = 270;
+      let posY = 100;
+      let angle = Math.PI / 2;
 
-      const trainBox = this.add.container(pos.x, pos.y);
+      if (v.state === 'PARKED') {
+        // P0: Exact physical parking slot allocation (supports 2-capacity FIFO)
+        const bay = this.dioramaConfig.sidingBays.find((b) => b.id === v.currentNode);
+        if (bay) {
+          const parkedAtBay = activeVehicles.filter(
+            (veh) => veh.state === 'PARKED' && veh.currentNode === bay.id
+          );
+          const slotIdx = Math.max(0, parkedAtBay.indexOf(v));
+          const slot = bay.slots[slotIdx] ?? bay.slots[0];
+          posX = slot.x;
+          posY = slot.y;
+          angle = Math.PI / 2;
+        } else {
+          const node = this.dioramaConfig.nodes[v.currentNode];
+          posX = node?.x ?? 270;
+          posY = node?.y ?? 380;
+        }
+      } else if (v.state === 'MOVING') {
+        // P0: Trajectory smoothly departs from actual siding slot if leaving parking
+        const bay = this.dioramaConfig.sidingBays.find((b) => b.id === v.fromNode);
+        const originSlot = bay ? bay.slots[0] : undefined;
+        const pathPoints = this.findPathWaypoints(v.fromNode || v.currentNode, v.toNode || v.currentNode, originSlot);
+
+        const transform = TrackGeometry.getVehicleTransform(pathPoints, interpProgress);
+        posX = transform.x;
+        posY = transform.y;
+        angle = transform.angle;
+      } else {
+        // SPAWNED or WAITING at node
+        const node = this.dioramaConfig.nodes[v.currentNode];
+        posX = node?.x ?? 270;
+        posY = node?.y ?? 100;
+        angle = Math.PI / 2;
+      }
+
+      trainBox.setPosition(posX, posY);
       trainBox.setRotation(angle);
-
-      const shadow = this.add.rectangle(3, 4, 44, 24, 0x000000, 0.32);
-      const bodyColor = v.color === 'R' ? 0xef4444 : 0x3b82f6;
-      const body = this.add.rectangle(0, 0, 42, 22, bodyColor);
-      body.setStrokeStyle(2, 0xffffff);
-
-      const roof = this.add.rectangle(0, -2, 36, 12, 0xffffff, 0.45);
-      const cab = this.add.circle(12, 0, 4, 0x1f2937);
-
-      const iconText = this.add
-        .text(-4, 0, v.color === 'R' ? '■' : '●', {
-          fontSize: '14px',
-          color: '#ffffff',
-          fontStyle: 'bold',
-        })
-        .setOrigin(0.5);
-
-      trainBox.add([shadow, body, roof, cab, iconText]);
-      this.trainsContainer.add(trainBox);
+      this.perfStats.frameUpdatesCount++;
     }
   }
 
-  private findPathWaypoints(fromId: string, toId: string): DioramaPoint[] {
+  private createVehicleContainer(color: string): Phaser.GameObjects.Container {
+    const box = this.add.container(0, 0);
+
+    const shadow = this.add.rectangle(3, 4, 44, 24, 0x000000, 0.32);
+    const bodyColor = color === 'R' ? 0xef4444 : 0x3b82f6;
+    const body = this.add.rectangle(0, 0, 42, 22, bodyColor);
+    body.setStrokeStyle(2, 0xffffff);
+
+    const roof = this.add.rectangle(0, -2, 36, 12, 0xffffff, 0.45);
+    const cab = this.add.circle(12, 0, 4, 0x1f2937);
+
+    const iconText = this.add
+      .text(-4, 0, color === 'R' ? '■' : '●', {
+        fontSize: '14px',
+        color: '#ffffff',
+        fontStyle: 'bold',
+      })
+      .setOrigin(0.5);
+
+    box.add([shadow, body, roof, cab, iconText]);
+    return box;
+  }
+
+  /**
+   * P0: Retrieves explicit waypoints for an edge.
+   * Throws an explicit descriptive error if edge is missing in diorama layout.
+   */
+  public findPathWaypoints(fromId: string, toId: string, originOverride?: DioramaPoint): DioramaPoint[] {
     const edge = this.dioramaConfig.edges.find((e) => e.from === fromId && e.to === toId);
-    if (edge && edge.points.length >= 2) {
-      return edge.points;
-    }
-    const fromN = this.dioramaConfig.nodes[fromId] || { x: 270, y: 100 };
-    const toN = this.dioramaConfig.nodes[toId] || { x: 270, y: 750 };
-    return [
-      { x: fromN.x, y: fromN.y },
-      { x: toN.x, y: toN.y },
-    ];
-  }
-
-  private interpolatePosition(points: DioramaPoint[], t: number): DioramaPoint {
-    if (points.length === 0) return { x: 270, y: 100 };
-    if (points.length === 1 || t <= 0) return points[0];
-    if (t >= 1) return points[points.length - 1];
-
-    if (points.length === 2) {
-      return {
-        x: Phaser.Math.Linear(points[0].x, points[1].x, t),
-        y: Phaser.Math.Linear(points[0].y, points[1].y, t),
-      };
+    if (!edge || edge.points.length < 2) {
+      throw new Error(
+        `[MiniRailCityScene] Missing edge definition in diorama layout: from "${fromId}" to "${toId}". Every logical edge must have an explicit visual curve!`
+      );
     }
 
-    const p0 = points[0];
-    const p1 = points[1];
-    const p2 = points[2];
-    const u = 1 - t;
-    const tt = t * t;
-    const uu = u * u;
+    if (originOverride) {
+      return [originOverride, ...edge.points.slice(1)];
+    }
 
-    return {
-      x: uu * p0.x + 2 * u * t * p1.x + tt * p2.x,
-      y: uu * p0.y + 2 * u * t * p1.y + tt * p2.y,
-    };
-  }
-
-  private calculateTrainAngle(points: DioramaPoint[], t: number): number {
-    if (points.length < 2) return Math.PI / 2;
-    const tNext = Math.min(1.0, t + 0.05);
-    const pNow = this.interpolatePosition(points, t);
-    const pNext = this.interpolatePosition(points, tNext);
-    return Phaser.Math.Angle.Between(pNow.x, pNow.y, pNext.x, pNext.y);
+    return edge.points;
   }
 
   private spawnCelebrationConfetti(): void {

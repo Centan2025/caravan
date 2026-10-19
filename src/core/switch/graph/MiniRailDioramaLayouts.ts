@@ -69,19 +69,130 @@ export interface MiniRailDioramaConfig {
 
 export class MiniRailDioramaRegistry {
   /**
-   * Generates handcrafted diorama layouts for the 3 curated showcase levels.
-   * Every node and edge 100% strictly corresponds to the simulation graph!
+   * Retrieves and strictly validates handcrafted diorama layout for the requested level.
+   * Throws explicit descriptive error if level is not supported or if layout is inconsistent.
    */
   public static getDioramaConfig(levelId: number, topology: GraphTopologyDef): MiniRailDioramaConfig {
+    let config: MiniRailDioramaConfig;
+
     switch (levelId) {
       case 101:
-        return this.getLevel101MeadowDiorama();
+        config = this.getLevel101MeadowDiorama();
+        break;
       case 104:
-        return this.getLevel104LogisticsDiorama();
+        config = this.getLevel104LogisticsDiorama();
+        break;
       case 1032:
-        return this.getLevel1032QuarryDiorama();
+      case 103:
+        config = this.getLevel1032QuarryDiorama();
+        break;
       default:
-        return this.getFallbackDiorama(levelId, topology);
+        throw new Error(
+          `[MiniRailDioramaRegistry] Level ${levelId} is not supported in Mini Rail City diorama mode. Supported levels: 101, 104 (Dual), 103-B FIFO (1032).`
+        );
+    }
+
+    // Strict Topology & Geometry Integrity Validation
+    this.validateDiorama(config, topology);
+
+    return config;
+  }
+
+  /**
+   * Strictly validates that the diorama presentation layout matches the simulation graph topology 100%.
+   */
+  public static validateDiorama(config: MiniRailDioramaConfig, topology: GraphTopologyDef): void {
+    // 1. Node validation
+    for (const node of topology.nodes) {
+      const vNode = config.nodes[node.id];
+      if (!vNode) {
+        throw new Error(
+          `[MiniRailDioramaRegistry] Missing visual node '${node.id}' in diorama config for level ${config.levelId}.`
+        );
+      }
+      if (vNode.type !== node.type) {
+        throw new Error(
+          `[MiniRailDioramaRegistry] Node type mismatch for '${node.id}': graph has '${node.type}', diorama has '${vNode.type}'.`
+        );
+      }
+      if (node.type === 'STATION' && vNode.stationColor !== node.stationColor) {
+        throw new Error(
+          `[MiniRailDioramaRegistry] Station color mismatch for '${node.id}': expected '${node.stationColor}', got '${vNode.stationColor}'.`
+        );
+      }
+      if (node.type === 'SIDING') {
+        const expectedCap = node.capacity ?? 1;
+        const bay = config.sidingBays.find((b) => b.id === node.id);
+        if (!bay) {
+          throw new Error(
+            `[MiniRailDioramaRegistry] Missing sidingBay entry for SIDING node '${node.id}'.`
+          );
+        }
+        if (bay.capacity !== expectedCap) {
+          throw new Error(
+            `[MiniRailDioramaRegistry] Siding capacity mismatch for '${node.id}': graph=${expectedCap}, diorama=${bay.capacity}.`
+          );
+        }
+        if (bay.slots.length !== expectedCap) {
+          throw new Error(
+            `[MiniRailDioramaRegistry] Siding slots count mismatch for '${node.id}': expected ${expectedCap} slots, got ${bay.slots.length}.`
+          );
+        }
+      }
+    }
+
+    // 2. Edge validation
+    for (const edge of topology.edges) {
+      const vEdge = config.edges.find(
+        (e) => e.from === edge.from && e.to === edge.to && (edge.branch === undefined || e.branch === edge.branch)
+      );
+      if (!vEdge) {
+        throw new Error(
+          `[MiniRailDioramaRegistry] Missing visual edge in diorama for graph edge '${edge.id}' (${edge.from} -> ${edge.to}${edge.branch ? ' [' + edge.branch + ']' : ''}).`
+        );
+      }
+      if (vEdge.points.length < 2) {
+        throw new Error(
+          `[MiniRailDioramaRegistry] Edge '${vEdge.id}' has insufficient waypoints (${vEdge.points.length}). Minimum is 2.`
+        );
+      }
+      const startPt = vEdge.points[0];
+      const endPt = vEdge.points[vEdge.points.length - 1];
+      const fromNode = config.nodes[edge.from];
+      const toNode = config.nodes[edge.to];
+
+      if (Math.hypot(startPt.x - fromNode.x, startPt.y - fromNode.y) > 2) {
+        throw new Error(
+          `[MiniRailDioramaRegistry] Edge '${vEdge.id}' start point (${startPt.x}, ${startPt.y}) does not match fromNode '${edge.from}' (${fromNode.x}, ${fromNode.y}).`
+        );
+      }
+      if (Math.hypot(endPt.x - toNode.x, endPt.y - toNode.y) > 2) {
+        throw new Error(
+          `[MiniRailDioramaRegistry] Edge '${vEdge.id}' end point (${endPt.x}, ${endPt.y}) does not match toNode '${edge.to}' (${toNode.x}, ${toNode.y}).`
+        );
+      }
+    }
+
+    // 3. Switch validation
+    for (const sw of topology.switches) {
+      if (!config.nodes[sw.id]) {
+        throw new Error(
+          `[MiniRailDioramaRegistry] Switch '${sw.id}' not declared in visual nodes.`
+        );
+      }
+      for (const branch of sw.branches) {
+        const branchEdge = config.edges.find((e) => e.from === sw.id && e.branch === branch);
+        if (!branchEdge) {
+          throw new Error(
+            `[MiniRailDioramaRegistry] Switch '${sw.id}' missing visual edge for branch '${branch}'.`
+          );
+        }
+      }
+    }
+
+    // 4. Station details validation
+    if (!config.stationDetails.RED || !config.stationDetails.BLUE) {
+      throw new Error(`[MiniRailDioramaRegistry] Missing stationDetails RED or BLUE in diorama config.`);
     }
   }
 
@@ -90,7 +201,7 @@ export class MiniRailDioramaRegistry {
   // Spatial Flow: Elegant S-curve starting top-center, swooping left into siding,
   // then sweeping back to twin pastoral stations by the pond.
   // ===========================================================================
-  private static getLevel101MeadowDiorama(): MiniRailDioramaConfig {
+  public static getLevel101MeadowDiorama(): MiniRailDioramaConfig {
     return {
       levelId: 101,
       topologyId: 'siding_topology_l1',
@@ -121,7 +232,7 @@ export class MiniRailDioramaRegistry {
       },
       nodes: {
         SOURCE: { id: 'SOURCE', x: 270, y: 110, label: 'Kargo Hangarı', type: 'SOURCE' },
-        SW_SIDING: { id: 'SW_SIDING', x: 270, y: 230, label: 'Kavşak 1', type: 'SWITCH' },
+        SW_SIDING: { id: 'SW_SIDING', x: 270, y: 230, label: 'Giriş Makası', type: 'SWITCH' },
         SIDING_BAY: { id: 'SIDING_BAY', x: 130, y: 380, label: 'Sol Park Cebi', type: 'SIDING', capacity: 1 },
         MERGE: { id: 'MERGE', x: 270, y: 530, label: 'Birleşme', type: 'WAYPOINT' },
         SW_STATION: { id: 'SW_STATION', x: 270, y: 640, label: 'İstasyon Makası', type: 'SWITCH' },
@@ -145,7 +256,6 @@ export class MiniRailDioramaRegistry {
           branch: 'MAIN',
           points: [
             { x: 270, y: 230 },
-            { x: 270, y: 380 },
             { x: 270, y: 530 },
           ],
         },
@@ -226,7 +336,7 @@ export class MiniRailDioramaRegistry {
   // Spatial Flow: Dynamic interlocking rail yard with dual staggered bays
   // (Left Bay A, Right Bay B), container crates, gantry crane, paved ground.
   // ===========================================================================
-  private static getLevel104LogisticsDiorama(): MiniRailDioramaConfig {
+  public static getLevel104LogisticsDiorama(): MiniRailDioramaConfig {
     return {
       levelId: 104,
       topologyId: 'siding_topology_l104_dual',
@@ -254,13 +364,13 @@ export class MiniRailDioramaRegistry {
       },
       nodes: {
         SOURCE: { id: 'SOURCE', x: 270, y: 100, label: 'Liman Kargo Girişi', type: 'SOURCE' },
-        SW_SIDING_A: { id: 'SW_SIDING_A', x: 270, y: 180, label: 'Makas A', type: 'SWITCH' },
-        SIDING_A: { id: 'SIDING_A', x: 125, y: 270, label: 'Sol Peron A', type: 'SIDING', capacity: 1 },
+        SW_SIDING_A: { id: 'SW_SIDING_A', x: 270, y: 180, label: 'Sol Giriş Makası', type: 'SWITCH' },
+        SIDING_A: { id: 'SIDING_A', x: 125, y: 270, label: 'Sol Park Cebi A', type: 'SIDING', capacity: 1 },
         MERGE_A: { id: 'MERGE_A', x: 270, y: 355, label: 'Kavşak A', type: 'WAYPOINT' },
-        SW_SIDING_B: { id: 'SW_SIDING_B', x: 270, y: 440, label: 'Makas B', type: 'SWITCH' },
-        SIDING_B: { id: 'SIDING_B', x: 415, y: 530, label: 'Sağ Peron B', type: 'SIDING', capacity: 1 },
-        MERGE_B: { id: 'MERGE_B', x: 270, y: 615, label: 'Kavşak B', type: 'WAYPOINT' },
-        SW_STATION: { id: 'SW_STATION', x: 270, y: 685, label: 'Terminal Makası', type: 'SWITCH' },
+        SW_SIDING_B: { id: 'SW_SIDING_B', x: 270, y: 440, label: 'Sağ Giriş Makası', type: 'SWITCH' },
+        SIDING_B: { id: 'SIDING_B', x: 415, y: 530, label: 'Sağ Park Cebi B', type: 'SIDING', capacity: 1 },
+        MERGE_B: { id: 'MERGE_B', x: 270, y: 615, label: 'Ana Birleşme', type: 'WAYPOINT' },
+        SW_STATION: { id: 'SW_STATION', x: 270, y: 685, label: 'İstasyon Makası', type: 'SWITCH' },
         RED: { id: 'RED', x: 160, y: 755, label: 'Kırmızı Terminal', type: 'STATION', stationColor: 'RED' },
         BLUE: { id: 'BLUE', x: 380, y: 755, label: 'Mavi Terminal', type: 'STATION', stationColor: 'BLUE' },
       },
@@ -411,7 +521,7 @@ export class MiniRailDioramaRegistry {
   // Spatial Flow: Terraced red/gold canyon stone, long 2-slot loading platform
   // with coal/ore chute, distinct curved bypass route around rocky outcrop.
   // ===========================================================================
-  private static getLevel1032QuarryDiorama(): MiniRailDioramaConfig {
+  public static getLevel1032QuarryDiorama(): MiniRailDioramaConfig {
     return {
       levelId: 1032,
       topologyId: 'siding_topology_l103_fifo',
@@ -441,10 +551,10 @@ export class MiniRailDioramaRegistry {
       },
       nodes: {
         SOURCE: { id: 'SOURCE', x: 270, y: 100, label: 'Maden Ocağı', type: 'SOURCE' },
-        SW_SIDING: { id: 'SW_SIDING', x: 270, y: 210, label: 'Maden Ayrımı', type: 'SWITCH' },
-        SIDING_BAY: { id: 'SIDING_BAY', x: 130, y: 370, label: '2x FIFO İskelesi', type: 'SIDING', capacity: 2 },
-        MERGE: { id: 'MERGE', x: 270, y: 530, label: 'Ana Hat Birleşimi', type: 'WAYPOINT' },
-        SW_STATION: { id: 'SW_STATION', x: 270, y: 640, label: 'İstasyon Dağıtımı', type: 'SWITCH' },
+        SW_SIDING: { id: 'SW_SIDING', x: 270, y: 210, label: 'Giriş Makası', type: 'SWITCH' },
+        SIDING_BAY: { id: 'SIDING_BAY', x: 130, y: 370, label: '2x FIFO Park Cebi', type: 'SIDING', capacity: 2 },
+        MERGE: { id: 'MERGE', x: 270, y: 530, label: 'Birleşme', type: 'WAYPOINT' },
+        SW_STATION: { id: 'SW_STATION', x: 270, y: 640, label: 'İstasyon Makası', type: 'SWITCH' },
         RED: { id: 'RED', x: 160, y: 750, label: 'Kızıl Maden Deposu', type: 'STATION', stationColor: 'RED' },
         BLUE: { id: 'BLUE', x: 380, y: 750, label: 'Gök Cevher Terminali', type: 'STATION', stationColor: 'BLUE' },
       },
@@ -543,9 +653,5 @@ export class MiniRailDioramaRegistry {
         },
       ],
     };
-  }
-
-  private static getFallbackDiorama(_levelId: number, _topology: GraphTopologyDef): MiniRailDioramaConfig {
-    return this.getLevel101MeadowDiorama();
   }
 }
