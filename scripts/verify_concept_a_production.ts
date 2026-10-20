@@ -7,6 +7,8 @@ import { execSync } from 'child_process';
 const ARTIFACT_DIR = 'C:\\Users\\PC\\.gemini\\antigravity\\brain\\fe21a11f-a0ed-482d-b2aa-bcfeb02ef115\\screenshots\\concept_a';
 const LOCAL_DIR = path.resolve(process.cwd(), 'screenshots', 'concept_a');
 const FRAMES_DIR = path.join(LOCAL_DIR, 'frames');
+const SPRITES_DIR = path.resolve(process.cwd(), 'design', 'assets', 'sprites');
+const ARTIFACT_DESIGN_DIR = 'C:\\Users\\PC\\.gemini\\antigravity\\brain\\fe21a11f-a0ed-482d-b2aa-bcfeb02ef115\\design';
 
 interface SimulationState {
   scenarioId: number;
@@ -148,12 +150,62 @@ async function composeSideBySide(
   });
 }
 
+async function exportAssetSprites(page: Page) {
+  console.log('\n======================================================');
+  console.log('0. ASSET PIPELINE: EXPORTING SPRITES & ATLAS');
+  console.log('======================================================');
+  fs.mkdirSync(SPRITES_DIR, { recursive: true });
+
+  const assetSheetPath = path.resolve(process.cwd(), 'design', 'assets', 'asset_sheet.html');
+  await page.setViewport({ width: 1280, height: 1100, deviceScaleFactor: 2 });
+  await page.goto('file:///' + assetSheetPath.replace(/\\/g, '/'), { waitUntil: 'networkidle0' });
+
+  const cards = await page.$$('.asset-card');
+  const cardNames = [
+    'toy_trains',
+    'track_geometry',
+    'switch_dials',
+    'stations_hub',
+    'siding_sal_plunger',
+    'mobile_hud',
+  ];
+
+  const atlasEntries: Record<string, { file: string; width: number; height: number; notes: string }> = {};
+
+  for (let i = 0; i < cards.length && i < cardNames.length; i++) {
+    const name = cardNames[i];
+    const preview = await cards[i].$('.preview-box');
+    if (preview) {
+      const box = await preview.boundingBox();
+      const outPath = path.join(SPRITES_DIR, `${name}.png`);
+      await preview.screenshot({ path: outPath });
+      atlasEntries[name] = {
+        file: `${name}.png`,
+        width: Math.round(box?.width || 0),
+        height: Math.round(box?.height || 0),
+        notes: `Exported vector diorama slice for ${name}`,
+      };
+      console.log(`✓ Exported sprite slice: ${name}.png`);
+    }
+  }
+
+  const atlasJsonPath = path.join(SPRITES_DIR, 'asset_atlas.json');
+  fs.writeFileSync(atlasJsonPath, JSON.stringify(atlasEntries, null, 2));
+  console.log(`✓ Generated asset atlas manifest: ${atlasJsonPath}`);
+}
+
 async function main() {
   fs.mkdirSync(ARTIFACT_DIR, { recursive: true });
   fs.mkdirSync(LOCAL_DIR, { recursive: true });
   fs.mkdirSync(FRAMES_DIR, { recursive: true });
 
-  const port = 5288;
+  // Clean old frame files
+  const existingFrames = fs.readdirSync(FRAMES_DIR);
+  for (const f of existingFrames) {
+    fs.unlinkSync(path.join(FRAMES_DIR, f));
+  }
+
+  const port = 5291;
   const server = await createServer({
     server: { port },
     logLevel: 'error',
@@ -169,7 +221,10 @@ async function main() {
   });
 
   const page = await browser.newPage();
-  page.setDefaultNavigationTimeout(30000);
+  page.setDefaultNavigationTimeout(35000);
+
+  // Phase 4: Export Asset Sprites & Atlas
+  await exportAssetSprites(page);
 
   console.log('\n======================================================');
   console.log('1. VIEWPORT TESTS & SCREENSHOTS');
@@ -226,7 +281,7 @@ async function main() {
   console.log('✓ Created side-by-side comparison image');
 
   console.log('\n======================================================');
-  console.log('3. DETERMINISTIC PLAYTHROUGH & FRAME RECORDING');
+  console.log('3. LIVE CDP SCREENCAST PLAYTHROUGH (15-25s Video)');
   console.log('======================================================');
   // Set viewport to 390x844 for authentic mobile gameplay recording
   await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 2 });
@@ -235,8 +290,27 @@ async function main() {
 
   const transform = await getCanvasTransform(page);
 
-  // Frame recording loop helper
-  let frameIndex = 0;
+  // Setup CDP screencast to record live gameplay frames without blocking RAF
+  const cdp = await page.target().createCDPSession();
+  let screencastCount = 0;
+  cdp.on('Page.screencastFrame', async ({ data, sessionId }) => {
+    const framePath = path.join(FRAMES_DIR, `live_${String(screencastCount).padStart(5, '0')}.jpg`);
+    fs.writeFileSync(framePath, Buffer.from(data, 'base64'));
+    screencastCount++;
+    try {
+      await cdp.send('Page.screencastFrameAck', { sessionId });
+    } catch {
+      // Ignored
+    }
+  });
+
+  console.log('Starting live CDP screencast stream...');
+  await cdp.send('Page.startScreencast', {
+    format: 'jpeg',
+    quality: 80,
+    everyNthFrame: 1,
+  });
+
   // Step 1: Verify Initial State
   const initialSim = await page.evaluate(() => window.__MINIRAIL_API__!.getSimulationState());
   console.log('Initial Switches:', initialSim.switches);
@@ -256,14 +330,14 @@ async function main() {
 
   // Click to toggle to BLUE
   await page.mouse.click(vpSwStation.x, vpSwStation.y);
-  await new Promise((r) => setTimeout(r, 200));
+  await new Promise((r) => setTimeout(r, 600));
   const swState1 = await page.evaluate(() => window.__MINIRAIL_API__!.getSimulationState().switches['SW_STATION']);
   if (swState1 !== 'BLUE') throw new Error(`[Assertion Error] Expected SW_STATION to be BLUE, got ${swState1}`);
   console.log('✓ SW_STATION successfully toggled to BLUE via interactive click');
 
   // Click again to toggle back to RED
   await page.mouse.click(vpSwStation.x, vpSwStation.y);
-  await new Promise((r) => setTimeout(r, 200));
+  await new Promise((r) => setTimeout(r, 600));
   const swState2 = await page.evaluate(() => window.__MINIRAIL_API__!.getSimulationState().switches['SW_STATION']);
   if (swState2 !== 'RED') throw new Error(`[Assertion Error] Expected SW_STATION to be RED, got ${swState2}`);
   console.log('✓ SW_STATION successfully toggled back to RED');
@@ -293,6 +367,9 @@ async function main() {
   await captureCanvasOnly(page, frame1);
   fs.copyFileSync(frame1, path.join(ARTIFACT_DIR, 'step1_parked.png'));
 
+  // Hold in parked state for 1.5s to show the parked toy and pulsing SAL button
+  await new Promise((r) => setTimeout(r, 1500));
+
   // Step 4: Siding SAL Release Button Press
   const salCoords = await page.evaluate(() => window.__MINIRAIL_API__!.getButtonCoordinates().sidingSal('SIDING_BAY'));
   if (!salCoords) throw new Error('[Assertion Error] Siding SAL button coordinates not found.');
@@ -320,8 +397,8 @@ async function main() {
   await captureCanvasOnly(page, frame2);
   fs.copyFileSync(frame2, path.join(ARTIFACT_DIR, 'step2_delivered.png'));
 
-  // Hold 1.2 second for celebration
-  await new Promise((r) => setTimeout(r, 1200));
+  // Hold 2.5 seconds for celebration confetti & victory feedback
+  await new Promise((r) => setTimeout(r, 2500));
 
   // Step 6: Test Restart Button (Top Right HUD pill at x=430, y=52)
   const restartCoords = await page.evaluate(() => window.__MINIRAIL_API__!.getButtonCoordinates().restart);
@@ -329,7 +406,7 @@ async function main() {
   console.log(`Clicking Restart button at (${Math.round(vpRestart.x)}, ${Math.round(vpRestart.y)})...`);
   await page.mouse.click(vpRestart.x, vpRestart.y);
 
-  await new Promise((r) => setTimeout(r, 600));
+  await new Promise((r) => setTimeout(r, 1000));
   const resetSim = await page.evaluate(() => window.__MINIRAIL_API__!.getSimulationState());
   if (resetSim.tickCount !== 0) throw new Error(`[Assertion Error] Expected tickCount 0 after restart, got ${resetSim.tickCount}`);
   if (resetSim.correctCount !== 0) throw new Error(`[Assertion Error] Expected correctCount 0 after restart, got ${resetSim.correctCount}`);
@@ -341,31 +418,27 @@ async function main() {
   await captureCanvasOnly(page, frame3);
   fs.copyFileSync(frame3, path.join(ARTIFACT_DIR, 'step3_restart.png'));
 
-  // Step 7: Encode MP4 Video via ffmpeg
+  // Record 3 more seconds after restart to show smooth clean new run
+  await new Promise((r) => setTimeout(r, 3000));
+
+  // Stop CDP screencast
+  console.log('Stopping CDP screencast...');
+  await cdp.send('Page.stopScreencast');
+  console.log(`✓ Total live screencast frames captured: ${screencastCount}`);
+
+  // Step 7: Encode smooth live MP4 Video via ffmpeg
   const mp4Out = path.join(LOCAL_DIR, 'concept_a_gameplay_390x844.mp4');
   const artifactMp4 = path.join(ARTIFACT_DIR, 'concept_a_gameplay_390x844.mp4');
   try {
-    console.log('Encoding MP4 video with ffmpeg (concat slideshow)...');
-    const concatFile = path.join(FRAMES_DIR, 'concat.txt');
-    const concatContent = [
-      `file 'step0_start.png'`,
-      `duration 2.5`,
-      `file 'step1_parked.png'`,
-      `duration 2.5`,
-      `file 'step2_delivered.png'`,
-      `duration 2.5`,
-      `file 'step3_restart.png'`,
-      `duration 2.5`,
-      `file 'step3_restart.png'`,
-    ].join('\n');
-    fs.writeFileSync(concatFile, concatContent);
-
+    console.log('Encoding live MP4 video with ffmpeg...');
+    // Calculate framerate so video lasts ~18 seconds
+    const targetFps = Math.max(10, Math.min(25, Math.round(screencastCount / 18)));
     execSync(
-      `ffmpeg -y -f concat -safe 0 -i "${concatFile}" -c:v libx264 -pix_fmt yuv420p -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" "${mp4Out}"`,
+      `ffmpeg -y -framerate ${targetFps} -i "${path.join(FRAMES_DIR, 'live_%05d.jpg')}" -c:v libx264 -pix_fmt yuv420p -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" "${mp4Out}"`,
       { stdio: 'inherit' }
     );
     fs.copyFileSync(mp4Out, artifactMp4);
-    console.log(`✓ MP4 gameplay video generated at: ${mp4Out}`);
+    console.log(`✓ Real continuous MP4 gameplay video generated at: ${mp4Out}`);
   } catch (err) {
     console.warn('ffmpeg encoding error (non-fatal):', err);
   }

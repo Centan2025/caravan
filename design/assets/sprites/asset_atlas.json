@@ -1,0 +1,38 @@
+{
+  "toy_trains": {
+    "file": "toy_trains.png",
+    "width": 304,
+    "height": 180,
+    "notes": "Exported vector diorama slice for toy_trains"
+  },
+  "track_geometry": {
+    "file": "track_geometry.png",
+    "width": 304,
+    "height": 180,
+    "notes": "Exported vector diorama slice for track_geometry"
+  },
+  "switch_dials": {
+    "file": "switch_dials.png",
+    "width": 304,
+    "height": 180,
+    "notes": "Exported vector diorama slice for switch_dials"
+  },
+  "stations_hub": {
+    "file": "stations_hub.png",
+    "width": 686,
+    "height": 180,
+    "notes": "Exported vector diorama slice for stations_hub"
+  },
+  "siding_sal_plunger": {
+    "file": "siding_sal_plunger.png",
+    "width": 304,
+    "height": 180,
+    "notes": "Exported vector diorama slice for siding_sal_plunger"
+  },
+  "mobile_hud": {
+    "file": "mobile_hud.png",
+    "width": 1068,
+    "height": 180,
+    "notes": "Exported vector diorama slice for mobile_hud"
+  }
+}
